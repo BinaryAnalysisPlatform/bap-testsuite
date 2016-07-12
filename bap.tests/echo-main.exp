@@ -1,0 +1,6 @@
+set test "echo.main"
+
+foreach-binary {file "*-echo"} "bap -d" {
+    "sub *main" {pass "$test $file"}
+    default {fail "$test in $file"}
+}

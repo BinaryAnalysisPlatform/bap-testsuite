@@ -1,0 +1,13 @@
+set test "propagate taint"
+set regs {ZF}
+set taint_opts [lmap x $regs {list "--taint-reg=$x"}]
+set bir_attrs {tainted-reg tainted-regs visited}
+set bir_attrs_opts [lmap x $bir_attrs {list "--print-bir-attr=$x"}]
+set opts "$taint_opts $bir_attrs_opts -d --propagate-taint"
+
+foreach attr $bir_attrs {
+    foreach-binary {file *} "bap $opts" {
+        ".$attr" {pass "$test $attr in $file"}
+        default  {fail "$test $attr in $file"}
+    }
+}

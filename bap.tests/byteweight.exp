@@ -1,0 +1,13 @@
+set test "byteweight"
+
+foreach-binary {file "*"} "bap -d --rooter=byteweight" {
+    "sub *main" {pass "$test $file"}
+    default {
+        if [string match "*-*-gnueabihf-*" $file] {
+            note "signatures do not handle gnueabihf mode"
+            xfail "$test in $file"
+        } else {
+            fail "$test in $file"
+        }
+    }
+}

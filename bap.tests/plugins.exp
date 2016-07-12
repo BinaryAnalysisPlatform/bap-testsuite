@@ -1,0 +1,15 @@
+set test "plugins"
+
+set listed_plugins [exec bap --list-plugins]
+set plugins [lmap x [split $listed_plugins "\n"] {lindex [split $x] 3}]
+
+
+exec bap --version
+
+foreach plugin $plugins {
+    spawn cat $logfile
+    expect {
+        "Loaded $plugin" {pass "is_loaded $plugin"}
+        default {fail "$plugin wasn't loaded"}
+    }
+}

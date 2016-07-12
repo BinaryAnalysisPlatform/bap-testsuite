@@ -1,0 +1,34 @@
+load_lib common.exp
+
+
+proc arch-of-file {file} {
+    lindex [split $file "-"] 0
+}
+
+proc abi-of-file {file} {
+    lindex [split $file "-"] 2
+}
+
+proc tripple-of-file {file} {
+    join [lrange [split $file "-"] 0 end-1] "-"
+}
+
+
+proc get-log {} {
+    set fd [open $logfile]
+    set data [read $fd]
+    close $fd
+    return $data
+}
+
+# `foreach-binary {file pattern} {expectations}` spawns bap with `-d`
+# option on each binary in the test suite that matches with the
+# `pattern`, and pass expectations to `expect`. The name passed as a
+# `file` argument is bound to the filename.
+proc foreach-binary {nampat command expectations} {
+    foreach file [find "bin" [lindex $nampat 1]] {
+        uplevel 1 set [lindex $nampat 0] $file
+        uplevel 1 spawn $command "--" "$file"
+        uplevel 1 expect [list $expectations]
+    }
+}

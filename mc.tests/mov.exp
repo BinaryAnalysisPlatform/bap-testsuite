@@ -1,0 +1,6 @@
+set test "mov"
+spawn bap-mc --show-insn=asm {\x48\x89\xc3}
+expect {
+    {mov? %rax, %rbx} {pass "$test"}
+    default {fail "$test"}
+}
