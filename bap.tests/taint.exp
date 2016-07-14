@@ -2,7 +2,7 @@ set test "propagate taint"
 set regs {ZF}
 set bir_attrs {tainted-reg tainted-regs visited}
 
-set opts "-d --propagate-taint"
+set opts "-d --pass=propagate-taint"
 foreach reg $regs {lappend opts "--taint-reg=$reg"}
 foreach attr $bir_attrs {lappend opts "--print-bir-attr=$attr"}
 
