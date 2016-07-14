@@ -1,8 +1,6 @@
 set test "plugins"
 
-set listed_plugins [exec bap --list-plugins]
-set plugins [lmap x [split $listed_plugins "\n"] {lindex [split $x] 3}]
-
+set plugins [exec bap --list-plugins | cut "-d " -f4]
 
 exec bap --version
 
