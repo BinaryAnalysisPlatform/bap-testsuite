@@ -15,6 +15,7 @@ proc tripple-of-file {file} {
 
 
 proc get-log {} {
+    global logfile
     set fd [open $logfile]
     set data [read $fd]
     close $fd

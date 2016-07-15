@@ -4,10 +4,22 @@ set plugins [exec bap --list-plugins | cut "-d " -f4]
 
 exec bap --version
 
+
+
+
+set log [split [get-log] "\n"]
+
 foreach plugin $plugins {
-    spawn cat $logfile
-    expect {
-        "Loaded $plugin" {pass "is_loaded $plugin"}
-        default {fail "$plugin wasn't loaded"}
+    set found 0
+    foreach line $log {
+        if [string match "*Loaded $plugin*" $line] {
+            set found 1
+            break
+        }
+    }
+    if {$found} {
+        pass "$plugin was loaded"
+    } else {
+        fail "$plugin wasn't loaded"
     }
 }
