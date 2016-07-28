@@ -1,6 +1,24 @@
-set test "mov"
-spawn bap-mc --show-insn=asm {\x48\x89\xc3}
-expect {
-    {mov? %rax, %rbx} {pass "$test"}
-    default {fail "$test"}
+# just to check that something works
+
+set suite {
+    x86-64   {\x48\x89\xc3\x00} {mov? %rax, %rbx}
+    x86      {\x89\xc3}         {mov? %eax, %ebx}
+    arm      {\x01\x00\xa0\xe1} {mov r0, r1}
+    thumb    {\x08\x46}         {mov r0, r1}
+    mips     {\x00\x40\x08\x21} {move  $1, $2}
+}
+
+foreach {arch code asm} $suite {
+    set test "$arch.mov"
+    spawn bap-mc --arch=$arch --show-insn=asm "$code"
+    expect {
+        "$asm" {pass "$test"}
+        default {fail "$test"}
+    }
+    set test "$arch.mov.trail"
+    spawn bap-mc --arch=$arch --show-insn=asm "$code\\x00"
+    expect {
+        "$asm"  {pass $test}
+        default {fail "$test"}
+    }
 }

@@ -2,6 +2,5 @@ set test "version"
 spawn bap-mc --version
 expect {
     "1" {pass $test}
-    "4" {xfail $test}
     default {fail $test}
 }
