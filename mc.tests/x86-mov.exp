@@ -1,0 +1,153 @@
+unset -nocomplain suite
+
+set suite(x86-64) {
+    {} {movb %al, %bl} {RBX := (high:56\[RBX\]).(low:8\[RAX\])}
+    {} {movb %ah, %bh} {RBX := (high:48\[RBX\]).((extract: 15:8\[RAX\]).(low:8\[RBX\]))}
+    {} {movb %al, %bh} {RBX := (high:48\[RBX\]).((low:8\[RAX\]).(low:8\[RBX\]))}
+    {} {movb %ah, %bl} {RBX := (high:56\[RBX\]).(extract: 15:8\[RAX\])}
+    {} {movb %al, (%rbx)} {mem64 := mem64 with \[RBX, el\]:u8 <- low:8\[RAX\]}
+    {} {movb %ah, (%rbx)} {mem64 := mem64 with \[RBX, el\]:u8 <- extract: 15:8\[RAX\]}
+
+    {} {movw %ax, %bx} {RBX := (high:48\[RBX\]).(low:16\[RAX\])}
+    {} {movw %ax, (%rbx)} {mem64 := mem64 with \[RBX, el\]:u16 <- low:16\[RAX\]}
+    {} {movl %eax, %ebx} {RBX := pad:64\[low:32\[RAX\]\]}
+    {} {movl %eax, (%rbx)} {mem64 := mem64 with \[RBX, el\]:u32 <- low:32\[RAX\]}
+    {} {movq %rax, %rbx} {RBX := RAX}
+    {} {movq %rax, (%rbx)} {mem64 := mem64 with \[RBX, el\]:u64 <- RAX}
+
+    {0x8a,0xd8} {movb %al, %bl} {RBX := (high:56\[RBX\]).(low:8\[RAX\])}
+    {0x8a,0xfc} {movb %ah, %bh} {RBX := (high:48\[RBX\]).((extract: 15:8\[RAX\]).(low:8\[RBX\]))}
+    {0x8a,0xf8} {movb %al, %bh} {RBX := (high:48\[RBX\]).((low:8\[RAX\]).(low:8\[RBX\]))}
+    {0x8a,0xdc} {movb %ah, %bl} {RBX := (high:56\[RBX\]).(extract: 15:8\[RAX\])}
+    {} {movb (%rbx), %al} {RAX := (high:56\[RAX\]).(mem64\[RBX, el\]:u8)}
+    {} {movb (%rbx), %ah} {RAX := (high:48\[RAX\]).((mem64\[RBX, el\]:u8).(low:8\[RAX\]))}
+
+    {0x66,0x8b,0xd8} {movw %ax, %bx} {RBX := (high:48\[RBX\]).(low:16\[RAX\])}
+    {} {movw (%rbx), %ax} {RAX := (high:48\[RAX\]).(mem64\[RBX, el\]:u16)}
+    {0x8b,0xd8} {movl %eax, %ebx} {RBX := pad:64\[low:32\[RAX\]\]}
+    {} {movl (%rbx), %eax} {RAX := pad:64\[mem64\[RBX, el\]:u32\]}
+    {0x48,0x8b,0xd8} {movq %rax, %rbx} {RBX := RAX}
+    {} {movq (%rbx), %rax} {RAX := mem64\[RBX, el\]:u64}
+
+    {} {movw %fs, %ax}  {RAX := (high:48\[RAX\]).FS}
+    {} {movl %fs, %eax} {RAX := pad:64\[FS\]}
+    {} {movq %fs, %rax} {RAX := pad:64\[FS\]}
+    {} {movw %fs, (%rax)} {mem64 := mem64 with \[RAX, el\]:u16 <- FS}
+
+    {} {movw %ax, %fs} {FS := low:16\[RAX\]}
+    {} {movl %eax, %fs} {FS := low:16\[RAX\]}
+    {} {movq %rax, %fs} {FS := low:16\[RAX\]}
+    {} {movw (%rax), %fs} {FS := mem64\[RAX, el\]:u16}
+
+    {} {movabsb 0x4, %al} {RAX := (high:56\[RAX\]).(mem64\[0x4:64, el\]:u8)}
+
+    {} {movabsw 0x4, %ax} {RAX := (high:48\[RAX\]).(mem64\[0x4:64, el\]:u16)}
+    {} {movabsl 0x4, %eax} {RAX := pad:64\[mem64\[0x4:64, el\]:u32\]}
+    {} {movabsq 0x4, %rax} {RAX := mem64\[0x4:64, el\]:u64}
+
+    {} {movabsb %al, 0x4} {mem64 := mem64 with \[0x4:64, el\]:u8 <- low:8\[RAX\]}
+
+    {} {movabsw %ax, 0x4} {mem64 := mem64 with \[0x4:64, el\]:u16 <- low:16\[RAX\]}
+    {} {movabsl %eax, 0x4} {mem64 := mem64 with \[0x4:64, el\]:u32 <- low:32\[RAX\]}
+    {} {movabsq %rax, 0x4} {mem64 := mem64 with \[0x4:64, el\]:u64 <- RAX}
+
+    {} {movb $0x4, %al} {RAX := (high:56\[RAX\]).0x4:8}
+    {} {movb $0x4, %ah} {RAX := (high:48\[RAX\]).(0x4:8.(low:8\[RAX\]))}
+
+    {} {movw $0x4, %ax} {RAX := (high:48\[RAX\]).0x4:16}
+    {} {movl $0x4, %eax} {RAX := pad:64\[0x4:32\]}
+    {} {movabsq $0x4, %rax} {RAX := 0x4:64}
+
+    {} {movb $0x4, (%rax)} {mem64 := mem64 with \[RAX, el\]:u8 <- 0x4:8}
+
+    {} {movw $0x4, (%rax)} {mem64 := mem64 with \[RAX, el\]:u16 <- 0x4:16}
+    {} {movl $0x4, (%rax)} {mem64 := mem64 with \[RAX, el\]:u32 <- 0x4:32}
+    {} {movq $0x4, (%rax)} {mem64 := mem64 with \[RAX, el\]:u64 <- 0x4:64}
+
+}
+
+set suite(x86) {
+    {} {movb %al, %bl} {EBX := (high:24\[EBX\]).(low:8\[EAX\])}
+    {} {movb %ah, %bh} {EBX := (high:16\[EBX\]).((extract: 15:8\[EAX\]).(low:8\[EBX\]))}
+    {} {movb %al, %bh} {EBX := (high:16\[EBX\]).((low:8\[EAX\]).(low:8\[EBX\]))}
+    {} {movb %ah, %bl} {EBX := (high:24\[EBX\]).(extract: 15:8\[EAX\])}
+    {} {movb %al, (%ebx)} {mem32 := mem32 with \[EBX, el\]:u8 <- low:8\[EAX\]}
+    {} {movb %ah, (%ebx)} {mem32 := mem32 with \[EBX, el\]:u8 <- extract: 15:8\[EAX\]}
+
+    {} {movw %ax, %bx} {EBX := (high:16\[EBX\]).(low:16\[EAX\])}
+    {} {movw %ax, (%ebx)} {mem32 := mem32 with \[EBX, el\]:u16 <- low:16\[EAX\]}
+    {} {movl %eax, %ebx} {EBX := EAX}
+    {} {movl %eax, (%ebx)} {mem32 := mem32 with \[EBX, el\]:u32 <- EAX}
+
+    {0x8a,0xd8} {movb %al, %bl} {EBX := (high:24\[EBX\]).(low:8\[EAX\])}
+    {0x8a,0xfc} {movb %ah, %bh} {EBX := (high:16\[EBX\]).((extract: 15:8\[EAX\]).(low:8\[EBX\]))}
+    {0x8a,0xf8} {movb %al, %bh} {EBX := (high:16\[EBX\]).((low:8\[EAX\]).(low:8\[EBX\]))}
+    {0x8a,0xdc} {movb %ah, %bl} {EBX := (high:24\[EBX\]).(extract: 15:8\[EAX\])}
+    {} {movb (%ebx), %al} {EAX := (high:24\[EAX\]).(mem32\[EBX, el\]:u8)}
+    {} {movb (%ebx), %ah} {EAX := (high:16\[EAX\]).((mem32\[EBX, el\]:u8).(low:8\[EAX\]))}
+
+    {0x66,0x8b,0xd8} {movw %ax, %bx} {EBX := (high:16\[EBX\]).(low:16\[EAX\])}
+    {} {movw (%ebx), %ax} {EAX := (high:16\[EAX\]).(mem32\[EBX, el\]:u16)}
+    {0x8b,0xd8} {movl %eax, %ebx} {EBX := EAX}
+    {} {movl (%ebx), %eax} {EAX := mem32\[EBX, el\]:u32}
+
+    {} {movw %fs, %ax} {EAX := (high:16\[EAX\]).FS}
+    {} {movl %fs, %eax} {EAX := pad:32\[FS\]}
+    {} {movl %fs, (%eax)} {mem32 := mem32 with \[EAX, el\]:u16 <- FS}
+
+    {} {movw %ax, %fs}  {FS := low:16\[EAX\]}
+    {} {movl %eax, %fs} {FS := low:16\[EAX\]}
+    {} {movl (%eax), %fs}  {FS := mem32\[EAX, el\]:u16}
+
+    {} {movb 0x4, %al} {EAX := (high:24\[EAX\]).(mem32\[0x4:32, el\]:u8)}
+
+    {} {movw 0x4, %ax} {EAX := (high:16\[EAX\]).(mem32\[0x4:32, el\]:u16)}
+    {} {movl 0x4, %eax} {EAX := mem32\[0x4:32, el\]:u32}
+    
+    {} {movb %al, 0x4} {mem32 := mem32 with \[0x4:32, el\]:u8 <- low:8\[EAX\]}
+
+    {} {movw %ax, 0x4} {mem32 := mem32 with \[0x4:32, el\]:u16 <- low:16\[EAX\]}
+    {} {movl %eax, 0x4} {mem32 := mem32 with \[0x4:32, el\]:u32 <- EAX}
+
+    {} {movb $0x4, %al} {EAX := (high:24\[EAX\]).0x4:8}
+    {} {movb $0x4, %ah} {EAX := (high:16\[EAX\]).(0x4:8.(low:8\[EAX\]))}
+
+    {} {movw $0x4, %ax} {EAX := (high:16\[EAX\]).0x4:16}
+    {} {movl $0x4, %eax} {EAX := 0x4:32}
+
+    {} {movb $0x4, (%eax)} {mem32 := mem32 with \[EAX, el\]:u8 <- 0x4:8}
+
+    {} {movw $0x4, (%eax)} {mem32 := mem32 with \[EAX, el\]:u16 <- 0x4:16}
+    {} {movl $0x4, (%eax)} {mem32 := mem32 with \[EAX, el\]:u32 <- 0x4:32}
+
+}
+
+
+proc run {arch suite} {
+    set encode "llvm-mc -arch=$arch --show-encoding"
+    set extract  "awk -vFS=\"\[\" -vRS=\"\]\" '\{print \$2\}'"
+    set mc "bap-mc --arch=$arch --show-insn=asm --x86-lifter=modern --show-bil=pretty"
+    foreach {code asm bil} $suite {
+        if { [string length $code] == 0 } {
+            set test "$arch.mov.\[$asm\]"
+            set command "echo '$asm' | $encode | $extract | $mc"
+        } else {
+            set test "$arch.mov.\[$asm\] -> $code"
+            set command "echo '$code' | $mc"
+        }
+        spawn sh -c $command
+        expect {
+            "$asm*$bil" { pass $test }
+            default {
+                puts $command
+                fail $test
+            }
+        }
+    }
+}
+
+foreach arch  [array names suite] {
+    run $arch $suite($arch)
+}
+
+unset -nocomplain suite
