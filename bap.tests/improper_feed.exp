@@ -1,0 +1,28 @@
+set test "improper_feed"
+
+proc touch {data} {
+    set file [exec mktemp]
+    if {[string length $data] != 0} {
+        exec echo $data > $file
+    }
+    return $file
+}
+
+set files {
+  "Bad file format" "Hello, world"
+  "Unexpected EOF" ""
+}
+
+foreach {expected data} $files {
+    set file [touch $data]
+    spawn bap $file -d
+    set exit_status [lindex [wait] 3]    
+    if {$exit_status != 0} {
+        expect {
+            $expected {pass "$test for $expected"}
+            default {fail "no diagnostic messages in $test for $file"}
+        }
+    } else {fail "unexpected zero exit status in $test for $file"}
+    exec rm $file
+}
+
