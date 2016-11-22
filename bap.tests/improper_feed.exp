@@ -16,8 +16,8 @@ set files {
 foreach {expected data} $files {
     set file [touch $data]
     spawn bap $file -d
-    set exit_status [lindex [wait] 3]    
-    if {$exit_status != 0} {
+    set status [lindex [wait] 3]    
+    if {$status != 0} {
         expect {
             $expected {pass "$test for $expected"}
             default {fail "no diagnostic messages in $test for $file"}
