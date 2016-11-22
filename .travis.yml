@@ -1,0 +1,37 @@
+language: c
+sudo: false
+script: bash -ex .run_travis.sh
+cache:
+  directories:
+    - $HOME/.opam
+  before_cache:
+    - opam remove bap -y
+    - rm -rf $HOME/.opam/log
+addons:
+  apt:
+    sources:
+    - avsm
+    packages:
+    - camlp4
+    - camlp4-extra
+    - clang
+    - curl
+    - libcurl4-gnutls-dev
+    - libgmp-dev
+    - libssl-dev
+    - libzip-dev
+    - llvm
+    - llvm-3.4-dev
+    - m4
+    - ocaml
+    - ocaml-base
+    - ocaml-base-nox
+    - ocaml-compiler-libs
+    - ocaml-native-compilers
+    - ocaml-nox
+    - time
+    - aspcud
+    - dejagnu
+
+env:
+  - FORK_USER=talex5 FORK_BRANCH=containers OPAMYES=true OCAML_VERSION=latest TESTS=false 
