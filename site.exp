@@ -1,4 +1,4 @@
 # site specific configuration
 
 set bindir "bin"
-set logfile [glob ~/.local/state/bap/log]
+set logfile "~/.local/state/bap/log"
