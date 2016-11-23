@@ -9,20 +9,21 @@ proc touch {data} {
 }
 
 set files {
-  "Bad file format" "Hello, world"
-  "Unexpected EOF" ""
+  "empty file"    "Unexpected EOF" ""
+  "random data"   "Bad file format" "Hello, world"
+  "truncated elf" "Bad file format" "\x7f\x45\x4c\x46\x02\x01\x01"
 }
 
-foreach {expected data} $files {
+foreach {msg expected data} $files {
     set file [touch $data]
     spawn bap $file -d
     set status [lindex [wait] 3]    
     if {$status != 0} {
         expect {
-            $expected {pass "$test for $expected"}
-            default {fail "no diagnostic messages in $test for $file"}
+            $expected {pass "$test for $msg"}
+            default {fail "no diagnostic/wrong messages in $test for $msg"}
         }
-    } else {fail "unexpected zero exit status in $test for $file"}
+    } else {fail "unexpected zero exit status in $test for $msg"}
     exec rm $file
 }
 
