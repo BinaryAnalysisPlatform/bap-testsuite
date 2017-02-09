@@ -1,0 +1,91 @@
+set test "api-options"
+
+set api_path [exec mktemp -d]
+set api_file [exec mktemp]
+
+set cases [list \
+                  add "add file"        "WARNING"            0 $api_file \
+                  add "add duplicate"   "Will not overwrite" 1 $api_file \
+                  add "add not existed" "can't find api"     1 some_file \
+                  rem "remove file"     "WARNING"            0 $api_file \
+                  rem "remove not existed" "Can't find api"  1 some_file ]
+
+proc base_expect {name api_cmd exp_status expected} {
+    global test api_path
+    uplevel 2 spawn bap $api_cmd
+    set res_status [lindex [wait] 3]
+    if {$exp_status == $res_status} {
+        expect {
+            $expected {pass "$test for $name"}
+            default {fail "no diagnostic/wrong messages in $test for $name"}
+        }
+    } else {fail "unexpected exit status in $test for $name: $res_status"}
+}
+
+proc simple_test { } {
+    global test cases
+    foreach {api_cmd name expected status api_file} $cases {
+        set api_cmd "--api-$api_cmd c:$api_file"
+        base_expect $name $api_cmd $status $expected
+    }
+}
+
+proc sanity_test { }  {
+    global api_path api_file
+    set name "sanity check"
+    exec -ignorestderr bap --api-add c:$api_file 2>/dev/null
+    exec mkdir $api_path/c
+    exec cp $api_file $api_path/c
+    exec ls $api_path/c
+    base_expect $name "--api-path $api_path --api-show" 1 "Sanitization error"
+    exec -ignorestderr bap --api-rem c:$api_file 2>/dev/null
+}
+
+proc show_api_test {} {
+    global api_path
+    set api_cmd "--api-path $api_path --api-show"
+    base_expect "show-api test" $api_cmd  0 "Total number of available API: 2"
+}
+
+proc list_paths_test {} {
+    global api_path
+    set default_path [exec bap --api-list-paths]
+    set api_cmd "--api-path $api_path --api-list-paths"
+    base_expect "list-paths:default" $api_cmd 0 $default_path
+    base_expect "list-paths:added path" $api_cmd 0 $api_path
+}
+
+proc test_path {} {
+    global api_path
+    set api_file0  [exec mktemp]
+    set api_file1  [exec mktemp]
+    set file_as_dir [exec mktemp]
+    exec ln -s $file_as_dir
+    exec ln -s $api_file1
+    set link_as_dir [exec basename $file_as_dir]
+    set link_as_api [exec basename $api_file1]
+
+    set data_dir [exec bap --api-list-paths]
+    exec chmod u-x $data_dir
+
+    base_expect "path denied" "--api-add c:$api_file0" 1 "permission denied"
+    base_expect "add to next path" "--api-path $api_path --api-add c:$api_file0" 0 "WARNING"
+    base_expect "destination is a file" "--api-path $file_as_dir --api-add c:$api_file0" 1 "not a directory"
+    base_expect "destination is a link" "--api-path $link_as_dir --api-add c:$api_file0" 1 "not a directory"
+    base_expect "add api as a link" "--api-path $api_path --api-add c:$link_as_api" 0 "WARNING"
+    base_expect "rem api as a link" "--api-path $api_path --api-rem c:$link_as_api" 0 "WARNING"
+
+    exec chmod u+x $data_dir
+    exec rm $api_file0 $api_file1 $file_as_dir $link_as_dir $link_as_api
+}
+
+
+simple_test
+sanity_test
+show_api_test
+list_paths_test
+test_path
+
+
+exec rm -r $api_path
+exec rm $api_file
