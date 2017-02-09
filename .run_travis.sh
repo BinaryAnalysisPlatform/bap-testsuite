@@ -10,8 +10,11 @@ BRANCH=+refs/pull/$PR_NUM/merge
 
 git clone --depth=50 https://github.com/$USER/bap.git $BAPDIR
 cd $BAPDIR
-git fetch origin $BRANCH
-git checkout -qf FETCH_HEAD
+
+(git fetch origin $BRANCH &&
+ git checkout -qf FETCH_HEAD) ||
+    git fetch origin master
+
 opam pin -yn add bap .
 opam install bap --deps-only
 opam install bap -v
