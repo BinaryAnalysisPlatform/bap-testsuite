@@ -1,4 +1,4 @@
-TARGETS="x86_64-linux-gnu arm-linux-gnueabi arm-linux-gnueabihf arm-linux-androideabi i686-w64-mingw32 x86_64-w64-mingw32"
+TARGETS="x86_64-linux-gnu arm-linux-gnueabi arm-linux-androideabi i686-w64-mingw32 x86_64-w64-mingw32"
 
 build() {
     target=$2
