@@ -1,1 +1,3 @@
 puts "unix board is loaded"
+
+set timeout -1
