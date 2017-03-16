@@ -20,7 +20,7 @@ void print_endline(const char *msg) {
 }
 
 
-int print_strings(const char **strings) {
+void print_strings(const char **strings) {
     const char **p;
     for (p = strings; *p; p++) {
         print_endline(*p);
@@ -54,4 +54,5 @@ int main(int argc, const char **argv) {
     for (i = 0; i < size; i++) {
         free(strings[i]);
     }
+    return 0;
 }

@@ -27,17 +27,18 @@ set testsuite {
     }
 }
 
+set print_opts {
+    --dump=symbols
+    --print-symbol-format=name
+    --print-symbol-format=addr
+}
+
 
 foreach {target symbols} $testsuite {
     set file "$bindir/$target-echo"
-    set print_opts {\
-        --dump=symbols\
-        --print-symbol-format=name\
-        --print-symbol-format=addr\
-    }
     foreach {name addr} $symbols {
         set report "$test $name $addr at $file"
-        eval spawn bap "$file" $print_opts
+        eval spawn bap "$file" [join $print_opts " "]
         expect {
             "$name $addr" {pass $report}
             default {fail $report}

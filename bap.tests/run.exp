@@ -1,0 +1,33 @@
+set test "run"
+
+set outputs {
+hello
+cruel
+world
+we
+not
+are
+some
+thine
+the
+be
+course
+}
+
+puts "running $test"
+set opts {
+    --primus-lisp-library-load=posix
+    --run-argv='hello,cruel,world'
+    --run
+}
+
+set args [join $opts " "]
+
+puts "args are $args"
+
+foreach output $outputs {
+    foreach-binary {bin "*-linux-gnu*"} "bap $args" {
+        $output {pass "$test $bin outputs $output" }
+        default {fail "missing $output in output of $bin"}
+    }
+}
