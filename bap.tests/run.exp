@@ -16,7 +16,7 @@ course
 
 puts "running $test"
 set opts {
-    --primus-lisp-library-load=posix
+    --primus-lisp-load=posix
     --run-argv='hello,cruel,world'
     --run
 }

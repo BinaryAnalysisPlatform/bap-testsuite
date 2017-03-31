@@ -1,11 +1,11 @@
 set test "symbol"
 set testsuite {
     "arm-linux-gnueabi" {
-        main              8618
+        main              8614
         print_strings     85c4
     }
     "arm-linux-androideabi" {
-        main              866c
+        main              8668
         print_strings     8618
     }
     "i686-w64-mingw32" {
