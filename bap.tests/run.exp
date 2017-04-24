@@ -15,19 +15,30 @@ course
 }
 
 puts "running $test"
+
+set bins {
+    "arm-linux-gnueabi-echo"
+    "x86-linux-gnu-echo"
+    "x86_64-linux-gnu-echo"
+}
+
 set opts {
     --primus-lisp-load=posix
     --run-argv='hello,cruel,world'
+    --symbolizer=file
+    --no-ida
+    --no-objdump
     --run
 }
 
-set args [join $opts " "]
-
-puts "args are $args"
 
 foreach output $outputs {
-    foreach-binary {bin "*-linux-gnu*"} "bap $args" {
-        $output {pass "$test $bin outputs $output" }
-        default {fail "missing $output in output of $bin"}
+    foreach bin $bins {
+        eval spawn bap "bin/$bin" --read-symbols-from "data/$bin.symbols" [join $opts " "]
+        expect {
+            $output {pass "$test $bin outputs $output" }
+            timeout {fail "got timeout"}
+            default {fail "missing '$output' in output of $bin"}
+        }
     }
 }
