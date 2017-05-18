@@ -1,0 +1,44 @@
+set test "run"
+
+set outputs {
+hello
+cruel
+world
+we
+not
+are
+some
+thine
+the
+be
+course
+}
+
+puts "running $test"
+
+set bins {
+    "arm-linux-gnueabi-echo"
+    "x86-linux-gnu-echo"
+    "x86_64-linux-gnu-echo"
+}
+
+set opts {
+    --primus-lisp-load=posix
+    --run-argv='hello,cruel,world'
+    --symbolizer=file
+    --no-ida
+    --no-objdump
+    --run
+}
+
+
+foreach output $outputs {
+    foreach bin $bins {
+        eval spawn bap "bin/$bin" --read-symbols-from "data/$bin.symbols" [join $opts " "]
+        expect {
+            $output {pass "$test $bin outputs $output" }
+            timeout {fail "got timeout"}
+            default {fail "missing '$output' in output of $bin"}
+        }
+    }
+}

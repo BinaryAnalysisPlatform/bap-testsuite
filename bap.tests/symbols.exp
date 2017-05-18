@@ -1,43 +1,44 @@
 set test "symbol"
 set testsuite {
     "arm-linux-gnueabi" {
-        main              8534
-        print_strings     84d8
+        main              8614
+        print_strings     85c4
     }
     "arm-linux-androideabi" {
-        main              83b4
-        print_strings     8350
-    }
-    "arm-linux-gnueabihf" {
-        main              84c0
-        print_strings     8488
+        main              8668
+        print_strings     8618
     }
     "i686-w64-mingw32" {
-        main              401592
-        print_strings     401560
+        main              4015c7
+        print_strings     40159d
     }
     "x86_64-w64-mingw32" {
-        main              401533
-        print_strings     4014f0
+        main              4025a0
+        print_strings     40153b
     }
-    "x86_64-linux-gnu" "" {
-        main              40064f
-        print_strings     40060d
+    "x86_64-linux-gnu"  {
+        main              40076b
+        print_strings     400733
 
     }
+    "x86-linux-gnu"  {
+        main              80485a4
+        print_strings     804857a
+    }
+}
+
+set print_opts {
+    --dump=symbols
+    --print-symbol-format=name
+    --print-symbol-format=addr
 }
 
 
 foreach {target symbols} $testsuite {
     set file "$bindir/$target-echo"
-    set print_opts {\
-        --dump=symbols\
-        --print-symbol-format=name\
-        --print-symbol-format=addr\
-    }
     foreach {name addr} $symbols {
         set report "$test $name $addr at $file"
-        eval spawn bap "$file" $print_opts
+        eval spawn bap "$file" [join $print_opts " "]
         expect {
             "$name $addr" {pass $report}
             default {fail $report}
