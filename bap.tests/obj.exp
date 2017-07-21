@@ -1,0 +1,32 @@
+set test "object files"
+
+set obj_dir "obj"
+
+set subs {
+    "sum_external"
+    "sum_internal_1"
+    "sum_internal_2"
+    "sum_internal_3"
+}
+
+set prefixes {"sub " "call @" }
+
+foreach {file} [exec ls $obj_dir] {
+    set file "$obj_dir/$file"
+    foreach {sub} $subs {
+        foreach {pref} $prefixes {
+            if { [string match "*i686*" $file] || [string match "*mac*" $file] } {
+                set suf "_"
+            } else {
+                set suf ""
+            }
+            set expected "$pref$suf$sub"
+            spawn bap $file -d --brancher=relocatable
+
+            expect {
+                $expected {pass "$test for $expected in $file"}
+                default {fail "$test for $expected in $file"}
+            }
+        }
+    }
+}
