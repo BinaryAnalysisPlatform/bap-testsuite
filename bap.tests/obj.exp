@@ -11,7 +11,7 @@ set subs {
 
 set prefixes {"sub " "call @" }
 
-foreach {file} [exec ls $obj_dir | grep ".o"] {
+foreach {file} [exec ls $obj_dir] {
     set file "$obj_dir/$file"
     foreach {sub} $subs {
         foreach {pref} $prefixes {
