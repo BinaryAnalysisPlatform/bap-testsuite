@@ -30,11 +30,6 @@ set cases {
         "call @memcpy"
         "call @sprintf"
     }
-
-    "x86_64-mac.kext" {
-        "sub _printf"
-        "call @_printf"
-    }
 }
 
 foreach {file strs} $cases {
