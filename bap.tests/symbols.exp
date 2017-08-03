@@ -25,6 +25,10 @@ set testsuite {
         main              80485a4
         print_strings     804857a
     }
+    "x86_64-macho"  {
+        main              100000e50
+        print_strings     100000df0
+    }
 }
 
 set print_opts {

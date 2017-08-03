@@ -1,0 +1,57 @@
+set test "llvm-base"
+
+set testsuite {
+    "arm-linux-gnueabi" {
+        main               614
+        print_strings      5c4
+    }
+    "arm-linux-androideabi" {
+        main               668
+        print_strings      618
+    }
+    "i686-w64-mingw32" {
+        main               15c7
+        print_strings      159d
+    }
+    "x86_64-w64-mingw32" {
+        main               25a0
+        print_strings      153b
+    }
+    "x86_64-linux-gnu"  {
+        main               76b
+        print_strings      733
+
+    }
+    "x86-linux-gnu"  {
+        main               5a4
+        print_strings      57a
+    }
+
+    "x86_64-macho"  {
+        main              e50
+        print_strings     df0
+    }
+}
+
+set print_opts {
+    --dump=symbols
+    --print-symbol-format=name
+    --print-symbol-format=addr
+}
+
+set bases { 0 42 }
+
+foreach {target symbols} $testsuite {
+    set file "$bindir/$target-echo"
+    foreach {name addr0} $symbols {
+        foreach {base} $bases {
+            set msg "$test for base=$base in $file for $name"
+            set addr [format %x [expr "0x$addr0" + $base ]]
+            eval spawn bap --llvm-base=$base "$file" [join $print_opts " "]
+            expect {
+                "$name $addr" {pass $msg}
+                default {fail $msg}
+            }
+        }
+    }
+}

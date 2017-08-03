@@ -1,0 +1,32 @@
+set test "dynamic-libraries"
+
+set dyn_dir "dyn"
+
+
+set cases {
+    "x86-coff-libvlc.dll" {
+        "sub libvlc_printerr"
+        "call @libvlc_printerr"
+    }
+
+    "x86_64-macho.dylib" {
+        "call @_printf"
+        "sub _printf"
+    }
+
+    "x86_64-elf.so" {
+        "sub my_print"
+    }
+}
+# elf test checks that file just loadable
+
+foreach {file strs} $cases {
+    set file "$dyn_dir/$file"
+    foreach {str} $strs {
+        spawn bap $file --brancher=relocatable -d --rooter=internal
+        expect {
+            "$str" {pass "$test test for $str in $file"}
+            default {fail "$test test: no $str in $file"}
+        }
+    }
+}

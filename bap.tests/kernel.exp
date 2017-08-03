@@ -1,0 +1,44 @@
+set test "kernel-modules"
+
+# Any unresolved jump is shown as jump to some subroutine like sub_000042,
+# also any synthetic subroutine will have similiar name before final renaming.
+# So next test checks that we don't have such subroutines. That's why internal
+# rooter used here. Also we check that we don't have any unresolved goto.
+
+set ko_dir "ko"
+
+foreach {file} [exec ls $ko_dir] {
+    set file "$ko_dir/$file"
+    spawn bap $file --brancher=relocatable -d --rooter=internal
+    expect {
+        "sub_*" {fail "$test test: unresolved jmp/unnamed synthetic subroutine in $file"}
+        "goto 0x0:" {fail "$test test: unresolved goto in $file"}
+        "call @0" {fail "$test test: unresolved jump in $file"}
+        default { pass "$test test for $file" }
+    }
+}
+
+# Test checks that next external symbols are represented as synthetic subroutines
+# and are called
+
+set cases {
+    "arm-can-bcm.ko" {
+        "sub kfree"
+        "sub memcpy(memcpy_dst, memcpy_src, memcpy_n, memcpy_result)"
+        "sub sprintf(sprintf_str, sprintf_format, sprintf_result)"
+        "call @kfree"
+        "call @memcpy"
+        "call @sprintf"
+    }
+}
+
+foreach {file strs} $cases {
+    set file "$ko_dir/$file"
+    foreach {str} $strs {
+        spawn bap $file --brancher=relocatable -d --rooter=internal
+        expect {
+            "$str" {pass "$test test for $str in $file"}
+            default {fail "$test test: no $str in $file"}
+        }
+    }
+}
