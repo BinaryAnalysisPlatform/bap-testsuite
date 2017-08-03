@@ -1,4 +1,4 @@
-set test "linux-kernel"
+set test "kernel-modules"
 
 # Any unresolved jump is shown as jump to some subroutine like sub_000042,
 # also any synthetic subroutine will have similiar name before final renaming.
@@ -7,7 +7,7 @@ set test "linux-kernel"
 
 set ko_dir "ko"
 
-foreach {file} [exec ls $ko_dir | grep ".ko"] {
+foreach {file} [exec ls $ko_dir] {
     set file "$ko_dir/$file"
     spawn bap $file --brancher=relocatable -d --rooter=internal
     expect {
@@ -19,23 +19,31 @@ foreach {file} [exec ls $ko_dir | grep ".ko"] {
 }
 
 # Test checks that next external symbols are represented as synthetic subroutines
+# and are called
 
-set file "$ko_dir/can-bcm.ko"
+set cases {
+    "arm-can-bcm.ko" {
+        "sub kfree"
+        "sub memcpy(memcpy_dst, memcpy_src, memcpy_n, memcpy_result)"
+        "sub sprintf(sprintf_str, sprintf_format, sprintf_result)"
+        "call @kfree"
+        "call @memcpy"
+        "call @sprintf"
+    }
 
-set syms {
-    "kfree"
-    "memcpy(memcpy_dst, memcpy_src, memcpy_n, memcpy_result)"
-    "printk"
-    "proc_mkdir"
-    "release_sock"
-    "strcpy(strcpy_dst, strcpy_src, strcpy_result)"
-    "sprintf(sprintf_str, sprintf_format, sprintf_result)"
+    "x86_64-mac.kext" {
+        "sub _printf"
+        "call @_printf"
+    }
 }
 
-foreach {s} $syms {
-    spawn bap $file --brancher=relocatable -d --rooter=internal
-    expect {
-        "sub $s" {pass "$test test for externals in $file"}
-        default {fail "$test test: no subroutine for $s in $file"}
+foreach {file strs} $cases {
+    set file "$ko_dir/$file"
+    foreach {str} $strs {
+        spawn bap $file --brancher=relocatable -d --rooter=internal
+        expect {
+            "$str" {pass "$test test for $str in $file"}
+            default {fail "$test test: no $str in $file"}
+        }
     }
 }

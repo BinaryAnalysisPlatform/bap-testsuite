@@ -9,7 +9,7 @@ int sum_internal_2(int a, int b) {
     return sum_internal_1(a, b) + c;
 }
 
-int sum_external(int a, int b);
+extern int sum_external(int a, int b);
 
 int sum_internal_3(int a, int b) {
     if (a > b) {
