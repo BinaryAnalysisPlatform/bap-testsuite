@@ -4,17 +4,17 @@ set dyn_dir "dyn"
 
 
 set cases {
-    "x86-coff-libvlc.dll" {
+    "x86-coff-libvlc_dll" {
         "sub libvlc_printerr"
         "call @libvlc_printerr"
     }
 
-    "x86_64-macho.dylib" {
+    "x86_64-macho_dylib" {
         "call @_printf"
         "sub _printf"
     }
 
-    "x86_64-elf.so" {
+    "x86_64-elf_so" {
         "sub my_print"
     }
 }
