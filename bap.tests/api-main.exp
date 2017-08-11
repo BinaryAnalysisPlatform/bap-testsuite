@@ -33,7 +33,7 @@ set testsuite {
     }
     "x86-linux-gnu" {
         "sub main(main_argc, main_argv, main_result)"
-        "main_argc :: in u32 = mem?ESP + 4:32, el?:u32"
+        "main_argc :: in u32 = mem?ESP + 4, el?:u32"
         "main_argv :: in out u32 = mem?ESP + 8, el?:u32"
         "main_result :: out u32 = EAX"
     }
