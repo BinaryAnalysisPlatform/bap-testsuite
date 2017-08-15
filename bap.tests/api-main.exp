@@ -15,8 +15,8 @@ set testsuite {
     }
     "i686-w64-mingw32" {
         "sub main(main_argc, main_argv, main_result)"
-        "main_argc :: in u32 = mem32?ESP + 0x4:32, el?:u32"
-        "main_argv :: in out u32 = mem32?ESP + 0x8:32, el?:u32"
+        "main_argc :: in u32 = mem?ESP + 4, el?:u32"
+        "main_argv :: in out u32 = mem?ESP + 8, el?:u32"
         "main_result :: out u32 = EAX"
     }
     "x86_64-w64-mingw32" {
@@ -33,8 +33,8 @@ set testsuite {
     }
     "x86-linux-gnu" {
         "sub main(main_argc, main_argv, main_result)"
-        "main_argc :: in u32 = mem32?ESP + 0x4:32, el?:u32"
-        "main_argv :: in out u32 = mem32?ESP + 0x8:32, el?:u32"
+        "main_argc :: in u32 = mem?ESP + 4, el?:u32"
+        "main_argv :: in out u32 = mem?ESP + 8, el?:u32"
         "main_result :: out u32 = EAX"
     }
 }
