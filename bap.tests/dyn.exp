@@ -2,31 +2,26 @@ set test "dynamic-libraries"
 
 set dyn_dir "dyn"
 
-
 set cases {
-    "x86-coff-libvlc_dll" {
-        "sub libvlc_printerr"
-        "call @libvlc_printerr"
-    }
-
-    "x86_64-macho_dylib" {
-        "call @_printf"
-        "sub _printf"
-    }
-
-    "x86_64-elf_so" {
-        "sub my_print"
-    }
+    "x86-coff-libvlc_dll" "libvlc_printerr" "libvlc_add_intf"
+    "x86_64-macho_dylib" "_printf" "_my_print"
+    "x86_64-elf_so" "my_print" ""
 }
-# elf test checks that file just loadable
+# elf test checks that file just loadable - since we still don't manage with plt/got sections
 
-foreach {file strs} $cases {
+foreach {file sym caller} $cases {
     set file "$dyn_dir/$file"
-    foreach {str} $strs {
-        spawn bap $file --brancher=relocatable -d --rooter=internal
+    spawn bap $file --brancher=relocatable -d --rooter=internal --print-symbol=$sym
+    expect {
+        "sub $sym" {pass "$test test for sub $sym in $file"}
+        default {fail "$test test: no sub $sym in $file"}
+    }
+
+    if {[string length $caller] != 0} {
+        spawn bap $file --brancher=relocatable -d --rooter=internal --print-symbol=$caller
         expect {
-            "$str" {pass "$test test for $str in $file"}
-            default {fail "$test test: no $str in $file"}
+            "call @$sym" {pass "$test test for call @$sym in $file"}
+            default {fail "$test test: no call of @$sym in $file"}
         }
     }
 }
