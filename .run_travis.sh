@@ -16,6 +16,7 @@ cd $BAPDIR
     git fetch origin master
 
 opam pin -yn add bap .
+opam install conf-bap-llvm
 opam install bap --deps-only
 opam install bap -v
 
