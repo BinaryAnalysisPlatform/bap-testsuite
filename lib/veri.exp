@@ -1,0 +1,2 @@
+# library for bap-veri test
+load_lib common.exp

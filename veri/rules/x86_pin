@@ -1,0 +1,40 @@
+
+# skipping modload and context switch events
+SKIP .* '.*: .* - .*' ''
+SKIP .* 'context-switch.*' ''
+
+# just because we deal with artificial traces
+SKIP .* 'pc-update: .*' 'pc-update: .*'
+SKIP .* 'pc-update: .*' ''
+SKIP .* '' 'pc-update: .*'
+
+# ignore all ours unmatched reads
+SKIP .* '' '.* => .*'
+
+# OR insn contains an unmatched read at left side,
+# e.g. when an argument is (imm -1)
+SKIP OR* '.* => .*' ''
+
+# XOR contains an unmatched read at left side when
+# operands are the same
+SKIP XOR* '.* => .*' ''
+
+# insn contains a conditional branch. As a result, in tracer,
+# if a condition is not satisfied then the same value
+# is written (the same as was read).
+SKIP CMPXCHG.* '.* <= .*' ''
+
+# LEAVE insn has additional read from RSP in our tracer.
+# and don't write anything in RSP, although it should
+SKIP LEAVE.* 'RSP => .*' ''
+SKIP LEAVE.* '' 'RSP <= .*'
+
+# Our flags reads(writes) should be subset of tracer
+# reads(writes). But writes should be with same value
+SKIP .* '.F => .*' ''
+DENY .* '(.F) <= .*' '\1 <= .*'
+SKIP .* '.F <= .*' ''
+
+# Last rules means that every event should has a pair
+DENY .* '.*' ''
+DENY .* '' '.*'

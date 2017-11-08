@@ -6,6 +6,7 @@ cache:
     - $HOME/.opam
   before_cache:
     - opam remove bap -y
+    - opam remove bap-veri -y
     - rm -rf $HOME/.opam/log
     - rm -rf $HOME/.local/state/bap
 addons:
@@ -35,4 +36,8 @@ addons:
     - dejagnu
 
 env:
-  - FORK_USER=talex5 FORK_BRANCH=containers OPAMYES=true OCAML_VERSION=latest TESTS=false
+  global:
+  - FORK_USER=talex5 FORK_BRANCH=containers OPAMYES=true OCAML_VERSION=4.05.0 OPAM_INIT=true OPAM_SWITCH=$OCAML_VERSION TESTS=false
+  matrix:
+  - BAP_RUN_VERI=false
+  - BAP_RUN_VERI=true
