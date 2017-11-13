@@ -21,4 +21,14 @@ opam install bap --deps-only
 opam install bap -v
 
 cd ../
-make check
+
+if [ "$BAPTEST_RUN_VERI" = "true" ]; then
+    git clone https://github.com/BinaryAnalysisPlatform/bap-veri
+    opam pin add bap-veri bap-veri/ -n
+    opam install -y bap-veri
+    make veri
+fi
+
+if [ "$BAPTEST_RUN_CHECK" = "true"  ]; then
+    make check
+fi
