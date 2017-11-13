@@ -22,11 +22,13 @@ opam install bap -v
 
 cd ../
 
-if [ "$BAP_RUN_VERI" = "true" ]; then
+if [ "$BAPTEST_RUN_VERI" = "true" ]; then
     git clone https://github.com/BinaryAnalysisPlatform/bap-veri
     opam pin add bap-veri bap-veri/ -n
     opam install -y bap-veri
     make veri
-else
+fi
+
+if [ "$BAPTEST_RUN_CHECK" = "true"  ]; then
     make check
 fi

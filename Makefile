@@ -11,7 +11,7 @@ runtest-exists:
 
 veri: runtest-exists
 	@export status=0;\
-	runtest --status --all --tool=bap-veri || status=1; \
+	runtest --status --all --tool=veri || status=1; \
 	exit $$status
 
 clean:
