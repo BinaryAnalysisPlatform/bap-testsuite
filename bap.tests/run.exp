@@ -16,13 +16,16 @@ course
 
 puts "running $test"
 
-set bins {
+set powerpc "powerpc32-linux-gnu-echo"
+
+set bins [subst {
     "arm-linux-gnueabi-echo"
     "x86-linux-gnu-echo"
     "x86_64-linux-gnu-echo"
-}
+    "$powerpc"
+}]
 
-set opts {
+set base_opts {
     --primus-lisp-load=posix
     --run-argv='hello,cruel,world'
     --symbolizer=file
@@ -31,9 +34,12 @@ set opts {
     --run
 }
 
-
 foreach output $outputs {
     foreach bin $bins {
+        set opts $base_opts
+        if { $bin == "$powerpc" } {
+            lappend opts "--api-path=api/powerpc"
+        }
         eval spawn bap "bin/$bin" --read-symbols-from "data/$bin.symbols" [join $opts " "]
         expect {
             $output {pass "$test $bin outputs $output" }

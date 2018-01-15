@@ -37,6 +37,12 @@ set testsuite {
         "main_argv :: in out u32 = mem?ESP + 8, el?:u32"
         "main_result :: out u32 = EAX"
     }
+    "powerpc32-linux-gnu" {
+        "sub main(main_argc, main_argv, main_result)"
+        "main_argc :: in u32 = R3"
+        "main_argv :: in out u32 = R4"
+        "main_result :: out u32 = R3"
+    }
 }
 
 
