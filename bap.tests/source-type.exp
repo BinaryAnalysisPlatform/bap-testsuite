@@ -5,7 +5,7 @@ set roots [exec mktemp]
 exec printf "\\x83\\x3d\\xe9\\xb5\\x21\\x00\\x01" > $file
 exec echo "(start 0 7)" > $roots
 
-spawn bap $file --no-dead-code-elimination -d --source-type=x86-code --rooter=file --read-symbols-from $roots
+spawn bap $file --no-dead-code-elimination -d --source-type=x86-code --read-symbols-from $roots
 expect {
     "OF" {pass "$test with raw code"}
     default {fail "$test with raw code"}
