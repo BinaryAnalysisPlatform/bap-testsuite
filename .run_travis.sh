@@ -30,5 +30,7 @@ if [ "$BAPTEST_RUN_VERI" = "true" ]; then
 fi
 
 if [ "$BAPTEST_RUN_CHECK" = "true"  ]; then
+    bap-byteweight fetch --url=https://github.com/BinaryAnalysisPlatform/bap/releases/download/v1.3.0/sigs_full.zip
+    bap-byteweight install
     make check
 fi
