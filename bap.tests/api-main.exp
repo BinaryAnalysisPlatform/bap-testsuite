@@ -37,6 +37,18 @@ set testsuite {
         "main_argv :: in out u32 = mem?ESP + 8, el?:u32"
         "main_result :: out u32 = EAX"
     }
+    "mips-linux-gnu" {
+        "sub main(main_argc, main_argv, main_result)"
+        "main_argc :: in u32 = A0"
+        "main_argv :: in out u32 = A1"
+        "main_result :: out u32 = V0"
+    }
+    "mips64-linux-gnueabi" {
+        "sub main(main_argc, main_argv, main_result)"
+        "main_argc :: in u64 = A0"
+        "main_argv :: in out u64 = A1"
+        "main_result :: out u64 = V0"
+    }
 }
 
 
