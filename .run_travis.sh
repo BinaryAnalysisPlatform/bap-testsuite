@@ -22,6 +22,8 @@ opam install bap -v
 
 cd ../
 
+bap-byteweight update --url=https://github.com/BinaryAnalysisPlatform/bap/releases/download/v1.3.0/sigs_full.zip
+
 if [ "$BAPTEST_RUN_VERI" = "true" ]; then
     git clone https://github.com/BinaryAnalysisPlatform/bap-veri
     opam pin add bap-veri bap-veri/ -n
