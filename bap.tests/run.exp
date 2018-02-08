@@ -16,14 +16,7 @@ course
 
 puts "running $test"
 
-set bins {
-    "arm-linux-gnueabi-echo"
-    "x86-linux-gnu-echo"
-    "x86_64-linux-gnu-echo"
-}
-
-set opts {
-    --primus-lisp-load=posix
+set base_opts {
     --run-argv='hello,cruel,world'
     --symbolizer=file
     --no-ida
@@ -31,9 +24,29 @@ set opts {
     --run
 }
 
+set mips32 "mips-linux-gnu-echo"
+set mips64 "mips64-linux-gnueabi-echo"
+
+set bins [subst {
+    "arm-linux-gnueabi-echo"
+    "x86-linux-gnu-echo"
+    "x86_64-linux-gnu-echo"
+    "$mips32"
+    "$mips64"
+}]
 
 foreach output $outputs {
     foreach bin $bins {
+        set opts $base_opts
+        if { $bin == "$mips64" } {
+            lappend opts "--primus-lisp-add site-lisp --primus-lisp-load mips --primus-limit-max-length=5000"
+        } else {
+            if { $bin == "$mips32" } {
+                lappend opts "--primus-limit-max-length=5000"
+            } else {
+                lappend opts "--primus-lisp-load=posix"
+            }
+        }
         eval spawn bap "bin/$bin" --read-symbols-from "data/$bin.symbols" [join $opts " "]
         expect {
             $output {pass "$test $bin outputs $output" }

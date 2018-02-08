@@ -1,5 +1,5 @@
 set test "propagate taint"
-set regs {ZF}
+set regs {ZF A0}
 set bir_attrs {tainted-reg tainted-regs visited}
 
 set opts "-d --propagate-taint"
