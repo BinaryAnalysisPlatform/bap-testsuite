@@ -32,6 +32,5 @@ if [ "$BAPTEST_RUN_VERI" = "true" ]; then
 fi
 
 if [ "$BAPTEST_RUN_CHECK" = "true"  ]; then
-    bap-byteweight install
     make check
 fi
