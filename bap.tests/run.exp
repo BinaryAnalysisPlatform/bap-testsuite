@@ -26,6 +26,7 @@ set base_opts {
 
 set mips32 "mips-linux-gnu-echo"
 set mips64 "mips64-linux-gnueabi-echo"
+set powerpc "powerpc32-linux-gnu-echo"
 
 set bins [subst {
     "arm-linux-gnueabi-echo"
@@ -33,6 +34,7 @@ set bins [subst {
     "x86_64-linux-gnu-echo"
     "$mips32"
     "$mips64"
+    "$powerpc"
 }]
 
 foreach output $outputs {
@@ -40,13 +42,14 @@ foreach output $outputs {
         set opts $base_opts
         if { $bin == "$mips64" } {
             lappend opts "--primus-lisp-add site-lisp --primus-lisp-load mips --primus-limit-max-length=5000"
-        } else {
-            if { $bin == "$mips32" } {
-                lappend opts "--primus-limit-max-length=5000"
-            } else {
-                lappend opts "--primus-lisp-load=posix"
-            }
         }
+        if { $bin == "$mips32" } {
+            lappend opts "--primus-limit-max-length=5000"
+        }
+        if { $bin == "$powerpc" } {
+            lappend opts "--api-path=api/powerpc"
+        }
+
         eval spawn bap "bin/$bin" --read-symbols-from "data/$bin.symbols" [join $opts " "]
         expect {
             $output {pass "$test $bin outputs $output" }
