@@ -40,12 +40,6 @@ set bins [subst {
 foreach output $outputs {
     foreach bin $bins {
         set opts $base_opts
-        if { $bin == "$mips64" } {
-            lappend opts "--primus-lisp-add site-lisp --primus-lisp-load mips --primus-limit-max-length=20000"
-        }
-        if { $bin == "$mips32" } {
-            lappend opts "--primus-limit-max-length=20000"
-        }
         if { $bin == "$powerpc" } {
             lappend opts "--api-path=api/powerpc"
         }
