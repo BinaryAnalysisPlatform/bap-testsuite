@@ -5,7 +5,6 @@ set secs {
     .init
     .plt
     .text
-    .fini
 }
 
 set file x86_64-linux-gnu-echo
