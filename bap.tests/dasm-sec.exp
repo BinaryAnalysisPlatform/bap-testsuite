@@ -1,7 +1,6 @@
 set test "disasm section"
 
 set secs {
-    .symtab
     .init
     .plt
     .text
