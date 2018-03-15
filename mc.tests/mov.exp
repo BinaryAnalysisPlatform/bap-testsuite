@@ -5,7 +5,7 @@ set suite {
     x86      {\x89\xc3}         {mov? %eax, %ebx}
     arm      {\x01\x00\xa0\xe1} {mov r0, r1}
     thumb    {\x08\x46}         {mov r0, r1}
-    mips     {\x00\x40\x08\x21} {move  $1, $2}
+    mips     {\x00\x40\x08\x21} {move *$1, $2}
     systemz  {\x18\x12}         {lr %r1, %r2}
 }
 
