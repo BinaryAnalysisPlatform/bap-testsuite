@@ -6,7 +6,7 @@ set traces [exec ls $tracesdir]
 set rules "veri/rules/x86_pin"
 
 set skipped { PCMPISTRI }
-set known_mismatches { BSF BSR CPUID CMOV* NEG NOOP* RDTSC SAR* SHL* SHR* SYSCALL XGETBV }
+set known_mismatches { BSF BSR CPUID CMOV* NEG NOOP* RDTSC SYSCALL XGETBV }
 
 proc is_match {insn patterns} {
     set r False
