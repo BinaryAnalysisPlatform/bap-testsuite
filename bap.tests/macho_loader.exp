@@ -1,10 +1,8 @@
 set test "macho loader"
 
-# 1 check for "symbol-entry _calloc"
-
 set files {
-    "ko/powerpc_darwin_be" "ref-external 45480 _abort"
-    "ko/x86_64_darwin_el" "ref-external 18439 _memcmp"
+    "ko/powerpc-darwin-be" "ref-external 45480 _abort"
+    "ko/x86_64-darwin-el" "ref-external 18439 _memcmp"
 }
 
 foreach {file expected} $files {
