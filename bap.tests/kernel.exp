@@ -5,24 +5,20 @@ set test "kernel-modules"
 # So next test checks that we don't have such subroutines. That's why internal
 # rooter used here. Also we check that we don't have any unresolved goto.
 
-set ko_dir "ko"
-
-foreach {file} [exec ls $ko_dir] {
-    set file "$ko_dir/$file"
-    spawn bap $file --brancher=relocatable -d --rooter=internal
-    expect {
-        "sub_*" {fail "$test test: unresolved jmp/unnamed synthetic subroutine in $file"}
-        "goto 0x0:" {fail "$test test: unresolved goto in $file"}
-        "call @0" {fail "$test test: unresolved jump in $file"}
-        default { pass "$test test for $file" }
-    }
+set file "ko/arm-can-bcm.ko"
+spawn bap $file --brancher=relocatable -d --rooter=internal
+expect {
+    "sub_*" {fail "$test test: unresolved jmp/unnamed synthetic subroutine in $file"}
+    "goto 0x0:" {fail "$test test: unresolved goto in $file"}
+    "call @0" {fail "$test test: unresolved jump in $file"}
+    default { pass "$test test for $file" }
 }
 
 # Test checks that next external symbols are represented as synthetic subroutines
 # and are called
 
 set cases {
-    "arm-can-bcm.ko" {
+    "ko/arm-can-bcm.ko" {
         "sub kfree"
         "sub memcpy(memcpy_dst, memcpy_src, memcpy_n, memcpy_result)"
         "sub sprintf(sprintf_str, sprintf_format, sprintf_result)"
@@ -33,7 +29,6 @@ set cases {
 }
 
 foreach {file strs} $cases {
-    set file "$ko_dir/$file"
     foreach {str} $strs {
         spawn bap $file --brancher=relocatable -d --rooter=internal
         expect {
