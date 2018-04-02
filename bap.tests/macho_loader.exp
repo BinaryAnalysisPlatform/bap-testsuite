@@ -1,11 +1,11 @@
 set test "macho loader"
 
-set files {
-    "ko/powerpc-darwin-be" "ref-external 45480 _abort"
-    "ko/x86_64-darwin-el" "ref-external 18439 _memcmp"
+set cases {
+    "ko/powerpc-xnu-be" "ref-external 45480 _abort"
+    "ko/x86_64-xnu-el" "ref-external 18439 _memcmp"
 }
 
-foreach {file expected} $files {
+foreach {file expected} $cases {
     spawn bap $file --dump=ogre
     expect {
         $expected {pass "$test for $file"}
