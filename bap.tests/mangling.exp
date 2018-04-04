@@ -1,0 +1,14 @@
+set test "mangling of duplicates subroutines"
+
+set subroutines {
+    "sub mycopy()"
+    "sub mycopy@5e0()"
+}
+
+foreach sub $subroutines {
+    spawn bap "dyn/x86_64-elf_so" -d --read-symbols-from "data/x86_64-elf_so.symbols"
+    expect {
+        $sub {pass "$test for $sub"}
+        default {fail "$test for $sub"}
+    }
+}
