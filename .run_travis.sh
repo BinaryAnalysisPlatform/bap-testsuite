@@ -8,6 +8,10 @@ USER=${TRAVIS_REPO_SLUG%/*}
 PR_NUM=${TRAVIS_PULL_REQUEST_BRANCH##*#}
 BRANCH=+refs/pull/$PR_NUM/merge
 
+if [ -z "$TRAVIS_PULL_REQUEST_BRANCH" ]; then
+    exit 0
+fi
+
 git clone --depth=50 https://github.com/$USER/bap.git $BAPDIR
 cd $BAPDIR
 
