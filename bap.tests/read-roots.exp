@@ -1,0 +1,18 @@
+set test "read-roots"
+
+set roots {
+    good_case "bin/x86_64-linux-gnu-echo" 1234 23492492741313 ""
+    bad_case1 "bin/x86-linux-gnu-echo"    1234 23492492741313 "exceeds the range"
+    bad_case2 "bin/x86_64-linux-gnu-echo" 1234 693123947249823492492741313 "exceeds the range"
+}
+
+foreach {name file x y msg} $roots {
+    set tmp [exec mktemp]
+    exec echo "$x\n$y" > $tmp
+    spawn bap $file --read-roots-from=$tmp
+    expect {
+        $msg {pass "$test for $name"}
+        default {fail "no diagnostic/wrong messages in $test for $name"}
+    }
+    exec rm $tmp
+}
