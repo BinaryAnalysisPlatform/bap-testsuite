@@ -2,8 +2,9 @@ set test "read-roots"
 
 set roots {
     good_case "bin/x86_64-linux-gnu-echo" 1234 23492492741313 ""
-    bad_case1 "bin/x86-linux-gnu-echo"    1234 23492492741313 "exceeds the range"
-    bad_case2 "bin/x86_64-linux-gnu-echo" 1234 693123947249823492492741313 "exceeds the range"
+    bad_case1 "bin/x86-linux-gnu-echo"    1234 23492492741313 "Can't read int64"
+    bad_case2 "bin/x86_64-linux-gnu-echo" 1234 693123947249823492492741313 "Can't read int64"
+    bad_case3 "bin/x86_64-linux-gnu-echo" asfd 1234 "Can't read int64"
 }
 
 foreach {name file x y msg} $roots {
