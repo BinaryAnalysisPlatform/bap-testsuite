@@ -1,17 +1,14 @@
 set test "source-type"
 
 set file [exec mktemp]
-set roots [exec mktemp]
 exec printf "\\x83\\x3d\\xe9\\xb5\\x21\\x00\\x01" > $file
-exec echo "(start 0 7)" > $roots
 
-spawn bap $file --no-optimization -d --source-type=x86-code --read-symbols-from $roots
+spawn bap $file -dasm --source-type=x86-code
 expect {
-    "OF" {pass "$test with raw code"}
+    "cmpl" {pass "$test with raw code"}
     default {fail "$test with raw code"}
 }
 exec rm $file
-exec rm $roots
 
 set file "/tmp/echo.marshal"
 exec bap bin/x86-linux-gnu-echo -dmarshal:$file
