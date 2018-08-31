@@ -6,7 +6,7 @@ set test "kernel-modules"
 # rooter used here. Also we check that we don't have any unresolved goto.
 
 set file "ko/arm-can-bcm.ko"
-spawn bap $file --brancher=relocatable -d --rooter=internal
+spawn bap $file -d --rooter=internal
 expect {
     "sub_*" {fail "$test test: unresolved jmp/unnamed synthetic subroutine in $file"}
     "goto 0x0:" {fail "$test test: unresolved goto in $file"}
@@ -30,7 +30,7 @@ set cases {
 
 foreach {file strs} $cases {
     foreach {str} $strs {
-        spawn bap $file --brancher=relocatable -d --rooter=internal
+        spawn bap $file -d --rooter=internal
         expect {
             "$str" {pass "$test test for $str in $file"}
             default {fail "$test test: no $str in $file"}

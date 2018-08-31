@@ -21,7 +21,7 @@ foreach {file} [exec ls $obj_dir] {
                 set suf ""
             }
             set expected "$pref$suf$sub"
-            spawn bap $file -d --brancher=relocatable
+            spawn bap $file -d
 
             expect {
                 $expected {pass "$test for $expected in $file"}
