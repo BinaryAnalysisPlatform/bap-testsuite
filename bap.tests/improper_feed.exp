@@ -9,7 +9,7 @@ proc touch {data} {
 }
 
 set files {
-  "empty file"    "File corrupted" ""
+  "empty file"    "file is empty" ""
   "random data"   "File format is not supported" "Hello, world"
   "truncated elf" "File format is not supported" "\x7f\x45\x4c\x46\x02\x01\x01"
 }
