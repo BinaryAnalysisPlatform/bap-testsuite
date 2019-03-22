@@ -1,0 +1,27 @@
+set test "config"
+
+set file "$bindir/x86-linux-gnu-echo"
+
+set etc [exec opam config var etc]
+set confdir "$etc/bap/print"
+set conf_file $confdir/config
+exec mkdir -p $confdir
+exec echo "symbol=_start" > $conf_file
+
+spawn bap $file -d
+
+expect {
+    "sub main"   {fail "$test: main is unexpected because not set in conf file"}
+    "sub _start" {pass "$test for reading parameters from conf file"}
+    default {fail "no output or wrong one is for $test"}
+}
+
+spawn bap $file -d --print-symbol=main
+
+expect {
+    "sub _start" {fail "$test: _start is unexpected"}
+    "sub main"   {pass "$test for overriding parameters in conf file"}
+    default {fail "no output or wrong one is for $test"}
+}
+
+exec rm -r $confdir
