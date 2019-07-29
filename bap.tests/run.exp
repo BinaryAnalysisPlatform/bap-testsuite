@@ -18,7 +18,6 @@ puts "running $test"
 
 set base_opts {
     --run-argv='hello,cruel,world'
-    --symbolizer=file
     --no-ida
     --no-objdump
     --run
