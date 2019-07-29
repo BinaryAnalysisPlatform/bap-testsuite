@@ -1,20 +1,11 @@
 set test "source-type"
 
 set file [exec mktemp]
-exec printf "\\x83\\x3d\\xe9\\xb5\\x21\\x00\\x01" > $file
+exec printf "\\x83\\x3d\\xe9\\xb5\\x21\\x00\\x01\\xeb\\xf7" > $file
 
 spawn bap $file -dasm --source-type=x86-code
 expect {
     "cmpl" {pass "$test with raw code"}
     default {fail "$test with raw code"}
-}
-exec rm $file
-
-set file "/tmp/echo.marshal"
-exec bap bin/x86-linux-gnu-echo -dmarshal:$file
-spawn bap $file --source-type=project -d
-expect {
-    "main" {pass "$test with marshal format"}
-    default {fail "$test with marshal format"}
 }
 exec rm $file

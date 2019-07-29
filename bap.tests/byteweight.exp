@@ -1,6 +1,6 @@
 set test "byteweight"
 
-foreach-binary {file "*"} "bap -d --rooter=byteweight" {
+foreach-binary {file "*"} "bap -d --no-objdump --no-ida" {
     "sub *print_strings" {pass "$test $file"}
     default {
         if [string match "*-*-gnueabihf-*" $file] {
