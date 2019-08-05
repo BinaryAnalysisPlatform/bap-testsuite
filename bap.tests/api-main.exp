@@ -63,11 +63,16 @@ foreach {target lines} $testsuite {
     foreach line $lines {
         spawn bap "$file" -d
         expect {
-            $line {pass "$test <$line> in $target"}
+            $line {
+                close; wait;
+                pass "$test <$line> in $target"
+            }
             default {
                 if [file exists $file ] {
+                    close; wait;
                     fail "$test <$line> $target"
                 } else {
+                    close; wait;
                     untested "$test $target"
                 }
             }

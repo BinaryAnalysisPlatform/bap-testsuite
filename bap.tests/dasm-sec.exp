@@ -11,7 +11,7 @@ set file x86_64-linux-gnu-echo
 foreach sec $secs {
     spawn bap "$bindir/$file" -dasm
     expect {
-        "Disassembly of section $sec" {pass "$test $sec"}
-        default {fail "$test failed at $sec"}
+        "Disassembly of section $sec" {close; wait; pass "$test $sec"}
+        default {close; wait; fail "$test failed at $sec"}
     }
 }

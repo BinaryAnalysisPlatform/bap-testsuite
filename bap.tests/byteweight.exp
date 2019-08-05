@@ -1,7 +1,7 @@
 set test "byteweight"
 
 foreach-binary {file "*"} "bap -d --no-objdump --no-ida" {
-    "sub *print_strings" {pass "$test $file"}
+    "sub *print_strings" {close; wait; pass "$test $file"}
     default {
         if [string match "*-*-gnueabihf-*" $file] {
             note "signatures do not handle gnueabihf mode"

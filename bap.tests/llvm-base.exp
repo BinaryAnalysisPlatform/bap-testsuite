@@ -49,8 +49,8 @@ foreach {target symbols} $testsuite {
             set addr [format %x [expr "0x$addr0" + $base ]]
             eval spawn bap --llvm-base=$base "$file" [join $print_opts " "]
             expect {
-                "$name $addr" {pass $msg}
-                default {fail $msg}
+                "$name $addr" {close; wait; pass $msg}
+                default {close; wait; fail $msg}
             }
         }
     }

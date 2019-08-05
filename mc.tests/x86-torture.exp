@@ -12,7 +12,7 @@ foreach {input output} $suite {
     set test "x86-torture.$input"
     spawn bap-mc --arch=x86 "$input"
     expect {
-        $output {pass $test}
-        default {fail $test}
+        $output {close; wait; pass $test}
+        default {close; wait; fail $test}
     }
 }

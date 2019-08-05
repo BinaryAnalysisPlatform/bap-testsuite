@@ -10,7 +10,7 @@ foreach {code size asm} $suite {
     spawn bap-mc --show-size --show-insn=asm "$code"
     expect {
         $size exp_continue
-        $asm {pass $test}
-        default {fail $test}
+        $asm {close; wait; pass $test}
+        default {close; wait; fail $test}
     }
 }

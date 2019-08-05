@@ -20,8 +20,8 @@ foreach {file strs} $cases {
     foreach {str} $strs {
         spawn bap $file -d --no-byteweight
         expect {
-            "$str" {pass "$test test for $str in $file"}
-            default {fail "$test test: no $str in $file"}
+            "$str" {close; wait; pass "$test test for $str in $file"}
+            default {close; wait; fail "$test test: no $str in $file"}
         }
     }
 }

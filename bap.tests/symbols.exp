@@ -44,8 +44,8 @@ foreach {target symbols} $testsuite {
         set report "$test $name $addr at $file"
         eval spawn bap "$file" [join $print_opts " "]
         expect {
-            "$name $addr" {pass $report}
-            default {fail $report}
+            "$name $addr" {close; wait; pass $report}
+            default {close; wait; fail $report}
         }
     }
 }

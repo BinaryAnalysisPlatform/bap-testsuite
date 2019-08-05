@@ -8,7 +8,7 @@ foreach attr $bir_attrs {lappend opts "--print-bir-attr=$attr"}
 
 foreach attr $bir_attrs {
     foreach-binary {file *} "bap $opts" {
-        ".$attr" {pass "$test $attr in $file"}
-        default  {fail "$test $attr in $file"}
+        ".$attr" {close; wait; pass "$test $attr in $file"}
+        default  {close; wait; fail "$test $attr in $file"}
     }
 }

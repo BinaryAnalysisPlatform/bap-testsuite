@@ -45,9 +45,9 @@ foreach output $outputs {
 
         eval spawn bap "bin/$bin" --read-symbols-from "data/$bin.symbols" [join $opts " "]
         expect {
-            $output {pass "$test $bin outputs $output" }
-            timeout {fail "got timeout"}
-            default {fail "missing '$output' in output of $bin"}
+            $output {close; wait; pass "$test $bin outputs $output" }
+            timeout {close; wait; fail "got timeout"}
+            default {close; wait; fail "missing '$output' in output of $bin"}
         }
     }
 }

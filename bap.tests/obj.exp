@@ -24,8 +24,8 @@ foreach {file} [exec ls $obj_dir] {
             spawn bap $file -d
 
             expect {
-                $expected {pass "$test for $expected in $file"}
-                default {fail "$test for $expected in $file"}
+                $expected {close; wait; pass "$test for $expected in $file"}
+                default {close; wait; fail "$test for $expected in $file"}
             }
         }
     }

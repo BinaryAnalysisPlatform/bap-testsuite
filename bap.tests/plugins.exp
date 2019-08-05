@@ -17,6 +17,7 @@ foreach plugin $plugins {
             break
         }
     }
+
     if {$found} {
         pass "$plugin was loaded"
     } else {

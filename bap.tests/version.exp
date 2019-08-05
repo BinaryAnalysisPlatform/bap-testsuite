@@ -1,9 +1,10 @@
 set test "version"
 spawn bap --version
 expect {
-    "error" {fail $test}
-    "1" {pass $test}
-    eof {fail $test}
+    "error" {close; wait; fail $test}
+    "1" {close; wait; pass $test}
+    "2" {close; wait; pass $test}
+    eof {close; wait; fail $test}
 }
 
 exec bap --version
