@@ -50,7 +50,7 @@ foreach {target symbols} $testsuite {
             eval spawn bap --llvm-base=$base "$file" [join $print_opts " "]
             expect {
                 "$name $addr" {close; wait; pass $msg}
-                default {close; wait; fail $msg}
+                default {wait; fail $msg}
             }
         }
     }

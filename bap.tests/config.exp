@@ -13,7 +13,7 @@ spawn bap $file -d
 expect {
     "sub main"   {close; wait; fail "$test: main is unexpected because not set in conf file"}
     "sub print_strings" {close; wait; pass "$test for reading parameters from conf file"}
-    default {close; wait; fail "no output or wrong one is for $test"}
+    default {wait; fail "no output or wrong one is for $test"}
 }
 
 spawn bap $file -d --print-symbol=main
@@ -21,7 +21,7 @@ spawn bap $file -d --print-symbol=main
 expect {
     "sub print_strings" {close; wait; fail "$test: print_strings is unexpected"}
     "sub main"   {close; wait; pass "$test for overriding parameters in conf file"}
-    default {close; wait; fail "no output or wrong one is for $test"}
+    default {wait; fail "no output or wrong one is for $test"}
 }
 
 exec rm -r $confdir

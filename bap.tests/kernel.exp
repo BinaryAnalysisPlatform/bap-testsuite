@@ -21,7 +21,7 @@ foreach {file strs} $cases {
         spawn bap $file -d --no-byteweight
         expect {
             "$str" {close; wait; pass "$test test for $str in $file"}
-            default {close; wait; fail "$test test: no $str in $file"}
+            default {wait; fail "$test test: no $str in $file"}
         }
     }
 }

@@ -69,10 +69,10 @@ foreach {target lines} $testsuite {
             }
             default {
                 if [file exists $file ] {
-                    close; wait;
+                    wait;
                     fail "$test <$line> $target"
                 } else {
-                    close; wait;
+                    wait;
                     untested "$test $target"
                 }
             }

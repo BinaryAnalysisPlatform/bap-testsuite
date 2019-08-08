@@ -9,6 +9,6 @@ foreach sub $subroutines {
     spawn bap "dyn/x86_64-elf_so" -d --read-symbols-from "data/x86_64-elf_so.symbols"
     expect {
         $sub {close; wait; pass "$test for $sub"}
-        default {close; wait; fail "$test for $sub"}
+        default {wait; fail "$test for $sub"}
     }
 }

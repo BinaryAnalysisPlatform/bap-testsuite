@@ -14,12 +14,12 @@ foreach {arch code asm} $suite {
     spawn bap-mc --arch=$arch --show-insn=asm "$code"
     expect {
         "$asm" {close; wait; pass "$test"}
-        default {close; wait; fail "$test"}
+        default {wait; fail "$test"}
     }
     set test "$arch.mov.trail"
     spawn bap-mc --arch=$arch --show-insn=asm "$code\\x00"
     expect {
         "$asm"  {close; wait; pass $test}
-        default {close; wait; fail "$test"}
+        default {wait; fail "$test"}
     }
 }

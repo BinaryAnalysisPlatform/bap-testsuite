@@ -13,6 +13,6 @@ foreach {input output} $suite {
     spawn bap-mc --arch=x86 "$input"
     expect {
         $output {close; wait; pass $test}
-        default {close; wait; fail $test}
+        default {fail $test}
     }
 }

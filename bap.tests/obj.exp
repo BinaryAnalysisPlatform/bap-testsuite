@@ -25,7 +25,7 @@ foreach {file} [exec ls $obj_dir] {
 
             expect {
                 $expected {close; wait; pass "$test for $expected in $file"}
-                default {close; wait; fail "$test for $expected in $file"}
+                default {wait; fail "$test for $expected in $file"}
             }
         }
     }

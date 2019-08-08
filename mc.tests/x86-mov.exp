@@ -131,7 +131,6 @@ proc run {arch suite} {
         expect {
             "$asm*$bil" { close; wait; pass $test }
             default {
-                close; wait;
                 fail "$test\n$command\n$bil\n$expect_out(buffer)"
             }
         }

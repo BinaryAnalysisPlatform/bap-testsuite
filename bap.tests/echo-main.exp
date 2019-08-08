@@ -2,5 +2,5 @@ set test "echo.main"
 
 foreach-binary {file "*-echo"} "bap -d" {
     "sub *main" {close; wait; pass "$test $file"}
-    default {close; wait; fail "$test in $file"}
+    default {wait; fail "$test in $file"}
 }

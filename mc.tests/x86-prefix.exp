@@ -11,6 +11,6 @@ foreach {code size asm} $suite {
     expect {
         $size exp_continue
         $asm {close; wait; pass $test}
-        default {close; wait; fail $test}
+        default {wait; fail $test}
     }
 }

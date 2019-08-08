@@ -3,5 +3,5 @@ spawn bap-mc --version
 expect {
     "1" {close; wait; pass $test}
     "2" {close; wait; pass $test}
-    default {close; wait; fail $test}
+    default {wait; fail $test}
 }
