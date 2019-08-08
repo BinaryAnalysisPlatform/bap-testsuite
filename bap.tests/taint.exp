@@ -2,13 +2,36 @@ set test "propagate taint"
 set regs {ZF A0 R1}
 set bir_attrs {tainted-reg tainted-regs visited}
 
-set opts "-d --propagate-taint"
+set base_opts {
+    --dump
+    --taint-reg=ZF
+    --taint-reg=A0
+    --taint-reg=R1
+    --print-bir-attr=tainted-reg
+    --print-bir-attr=tainted-regs
+    --print-bir-attr=visited
+    --run
+    --run-entry-points=all-subroutines
+    --primus-limit-max-length=128
+    --primus-promiscuous-mode
+    --primus-greedy-scheduler
+    --primus-propagate-taint-from-attributes
+    --primus-propagate-taint-to-attributes
+}
+
 foreach reg $regs {lappend opts "--taint-reg=$reg"}
 foreach attr $bir_attrs {lappend opts "--print-bir-attr=$attr"}
 
 foreach attr $bir_attrs {
-    foreach-binary {file *} "bap $opts" {
-        ".$attr" {close; wait; pass "$test $attr in $file"}
-        default  {close; wait; fail "$test $attr in $file"}
+    foreach file [find "bin" "*"] {
+        set opts $base_opts
+        if { $file == "bin/powerpc32-linux-gnu-echo" } {
+            lappend opts "--api-path=api/powerpc"
+        }
+        eval spawn bap $file [join $opts " "]
+        expect {
+            ".$attr" {close; wait; pass "$test $attr in $file"}
+            default  {fail "$test $attr in $file"}
+        }
     }
 }
