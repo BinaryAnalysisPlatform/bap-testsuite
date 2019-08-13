@@ -1,0 +1,3 @@
+[submodule "bap-veri"]
+	path = veri/bap-veri
+	url = https://github.com/BinaryAnalysisPlatform/bap-veri.git
