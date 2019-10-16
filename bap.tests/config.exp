@@ -3,10 +3,19 @@ set test "config"
 set file "$bindir/x86-linux-gnu-echo"
 
 set etc [exec opam config var etc]
-set confdir "$etc/bap/print"
+set confdir "$etc/bap"
 set conf_file $confdir/config
 exec mkdir -p $confdir
-exec echo "symbol=print_strings" > $conf_file
+exec echo "
+# this is a testing configuration file
+# if you found it in your system, then report a bug to
+# https://github.com/BinaryAnalysisPlatform/bap/issues
+
+print-symbol = print_strings # this is an example of parameter
+
+# the end of file
+
+" > $conf_file
 
 spawn bap $file -d
 
