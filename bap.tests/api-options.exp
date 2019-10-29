@@ -17,18 +17,18 @@ exec cp $api_file $api_path/c
 set cmds [subst {
     "api_show"           show       $api_path $api_name            0 ""            0
     "list-paths"         list-paths $api_path "$api_path"          0 ""            0
-    "add api"            add        ""        "WARNING"            0 c:$api_file   0
+    "add api"            add        ""        ""                   0 c:$api_file   0
     "add duplicate"      add        ""        "Will not overwrite" 1 c:$api_file   0
     "add not existed"    add        ""        "can't find api"     1 c:some_file   0
     "sanity check"       add        $api_path "Sanitization error" 1 c:$api_file   0
-    "remove api"         rem        ""        "WARNING"            0 c:$api_file   0
-    "remove api at path" rem        $api_path "WARNING"            0 c:$api_file   0
+    "remove api"         rem        ""        ""                   0 c:$api_file   0
+    "remove api at path" rem        $api_path ""                   0 c:$api_file   0
     "remove not existed" rem        ""        "Can't find api"     1 c:some_file   0
-    "add api as a link"  add        ""        "WARNING"            0 c:$link       0
-    "rem api as a link"  rem        ""        "WARNING"            0 c:$link       0
+    "add api as a link"  add        ""        ""                   0 c:$link       0
+    "rem api as a link"  rem        ""        ""                   0 c:$link       0
     "link as direcory"   add        $link     "not a directory"    1 c:$api_file   0
     "add to denied path" add        ""        "permission denied"  1 c:$api_file   1
-    "add to next path"   add        $api_path "WARNING"            0 c:$api_file   1
+    "add to next path"   add        $api_path ""                   0 c:$api_file   1
 }]
 
 foreach {name cmd path expected exp_status file chmod} $cmds {

@@ -1,6 +1,6 @@
 set test "byteweight"
 
-foreach-binary {file "*"} "bap -d --no-objdump --no-ida" {
+foreach-binary {file "*"} "bap :dis -d" {
     "sub *print_strings" {close; wait; pass "$test $file"}
     default {
         wait;
