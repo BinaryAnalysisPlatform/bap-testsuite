@@ -26,7 +26,7 @@ foreach {trace} $traces {
     if [is_match $insn $skipped] {
         puts "SKIP test for $insn"
     } else {
-        spawn bap-veri $file --rules $rules
+        spawn bap veri $file --rules $rules
         expect {
             "successed   | 100.00% " {pass "$test for $insn"}
             default {
