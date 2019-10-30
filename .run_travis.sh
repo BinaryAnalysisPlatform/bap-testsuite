@@ -28,7 +28,10 @@ if [ "$BAPTEST_RUN_VERI" = "true" ]; then
     git submodule init
     git submodule update
     opam pin add bap-veri veri/bap-veri/ -n
-    opam install -y bap-veri
+    opam install bap-veri --deps-only
+    cd veri/bap-veri
+    make && make install
+    cd ../../
     make veri
 fi
 
