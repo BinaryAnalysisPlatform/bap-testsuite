@@ -10,7 +10,7 @@ set suite {
 
 foreach {input output} $suite {
     set test "x86-torture.$input"
-    spawn bap-mc --arch=x86 "$input"
+    spawn bap-mc --stop-on-error --arch=x86 "$input"
     expect {
         $output {close; wait; pass $test}
         default {fail $test}
