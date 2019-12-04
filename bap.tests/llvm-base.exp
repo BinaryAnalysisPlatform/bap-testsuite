@@ -47,7 +47,7 @@ foreach {target symbols} $testsuite {
         foreach {base} $bases {
             set msg "$test for base=$base in $file for $name"
             set addr [format %x [expr "0x$addr0" + $base ]]
-            eval spawn bap ":disassemble" --loader=llvm --llvm-base=$base "$file" [join $print_opts " "]
+            eval spawn bap --loader=llvm --llvm-base=$base "$file" [join $print_opts " "]
             expect {
                 "$name $addr" {close; wait; pass $msg}
                 default {wait; fail $msg}
