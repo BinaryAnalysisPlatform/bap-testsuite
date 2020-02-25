@@ -1,6 +1,6 @@
 set test "llvm-x86-64-sse"
 
-spawn bap sse/floats --bil-lift-unknown --run --primus-lisp-load=posix,llvm-x86-64-floats
+spawn bap sse/floats --bil-enable-intrinsic=:unknown --run --primus-lisp-load=posix,llvm-x86-64-floats
 set passes 0
 set expected_passes 7
 expect {
