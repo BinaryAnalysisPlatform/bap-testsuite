@@ -12,7 +12,7 @@ set base_opts {
     --print-bir-attr=visited
     --run
     --run-entry-points=all-subroutines
-    --primus-limit-max-length=128
+    --primus-limit-max-length=256
     --primus-promiscuous-mode
     --primus-greedy-scheduler
     --primus-propagate-taint-from-attributes
