@@ -1,0 +1,16 @@
+set test "llvm-x86-64-sse"
+
+spawn bap sse/floats --bil-lift-unknown --run --primus-lisp-load=posix,llvm-x86-64-floats
+set passes 0
+set expected_passes 7
+expect {
+    "PASS" {incr passes; exp_continue}
+    default {
+        wait;
+        if { $passes == $expected_passes } {
+            pass "got $expected_passes passes"
+        } else {
+            fail "expected $expected_passes passes got $passes"
+        }
+    }
+}
