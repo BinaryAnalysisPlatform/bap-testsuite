@@ -43,6 +43,7 @@ foreach output $outputs {
 
         eval spawn bap "bin/$bin" --read-symbols-from "data/$bin.symbols" [join $opts " "]
         expect {
+            "ill-typed" {close; wait; fail "program is ill-typed" }
             $output {close; wait; pass "$test $bin outputs $output" }
             timeout {wait; fail "got timeout"}
             default {wait; fail "missing '$output' in output of $bin"}
