@@ -1,8 +1,25 @@
-set test "llvm-x86-64-sse"
+# runs a simple floating-point arirthmetic test
+# The test (source is in src/floats.c) performs only
+# three floating-point operations, addition, division,
+# and comparison (plus data movement ops, but they were
+# supported for a long time and covered by the mc tests)
+# The test program shall output PASS seven times
+# (see expected_passes)
 
-spawn bap sse/floats --bil-enable-intrinsic=:unknown --run --primus-lisp-load=posix,llvm-x86-64-floats
+
+set test "llvm-x86-64-sse"
 set passes 0
 set expected_passes 7
+
+set opts {
+    --read-symbols-from=data/floats.symbols
+    --bil-enable-intrinsic=:unknown
+    --primus-lisp-load=posix,llvm-x86-64-floats
+    --pass=run
+}
+
+eval spawn bap sse/floats [join $opts " "]
+
 expect {
     "PASS" {incr passes; exp_continue}
     default {
