@@ -5,6 +5,15 @@ set file "$bindir/x86-linux-gnu-echo"
 set etc [exec opam config var etc]
 set confdir "$etc/bap"
 set conf_file $confdir/config
+
+set user_conf_exists false
+set user_conf_file [exec mktemp]
+
+if [file exists $conf_file] {
+    set user_conf_exists true
+    exec cp $conf_file $user_conf_file
+}
+
 exec mkdir -p $confdir
 exec echo "
 # this is a testing configuration file
@@ -33,4 +42,8 @@ expect {
     default {wait; fail "no output or wrong one is for $test"}
 }
 
-exec rm -r $confdir
+exec rm $conf_file
+
+if {$user_conf_exists == "true"} {
+    exec mv $user_conf_file $conf_file
+}
