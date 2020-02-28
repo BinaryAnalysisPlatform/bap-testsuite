@@ -19,6 +19,7 @@ puts "running $test"
 set base_opts {
     --run-argv='hello,cruel,world'
     --run
+    --primus-lisp-type-check
 }
 
 set mips32 "mips-linux-gnu-echo"
