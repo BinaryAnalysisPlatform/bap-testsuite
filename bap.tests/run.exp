@@ -1,6 +1,6 @@
 set test "run"
 
-set outputs {
+set expected {
 hello
 cruel
 world
@@ -14,10 +14,11 @@ be
 course
 }
 
+
 puts "running $test"
 
 set base_opts {
-    --run-argv='hello,cruel,world'
+    --run-argv=hello,cruel,world
     --run
     --primus-lisp-type-check
 }
@@ -35,19 +36,17 @@ set bins [subst {
     "$powerpc"
 }]
 
-foreach output $outputs {
-    foreach bin $bins {
-        set opts $base_opts
-        if { $bin == "$powerpc" } {
-            lappend opts "--api-path=api/powerpc"
-        }
+set output [join $expected "\r\n"]
 
-        eval spawn bap "bin/$bin" --read-symbols-from "data/$bin.symbols" [join $opts " "]
-        expect {
-            "ill-typed" {close; wait; fail "program is ill-typed" }
-            $output {close; wait; pass "$test $bin outputs $output" }
-            timeout {wait; fail "got timeout"}
-            default {wait; fail "missing '$output' in output of $bin"}
-        }
+foreach bin $bins {
+    set opts $base_opts
+    if { $bin == "$powerpc" } {
+        lappend opts "--api-path=api/powerpc"
+    }
+    eval spawn bap "bin/$bin" --read-symbols-from "data/$bin.symbols" [join $opts " "]
+    expect {
+        "ill-typed" {close; wait; fail "program is ill-typed" }
+        "$output\r\n" {close; wait; pass "$test $bin outputs everything" }
+        default {wait; fail "got incomplete output from $bin"}
     }
 }

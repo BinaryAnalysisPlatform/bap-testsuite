@@ -22,6 +22,43 @@ proc get-log {} {
     return $data
 }
 
+proc assert-non-zero {result file test} {
+    if {$result == 0} {
+        fail "$test in $file"
+    } else {
+        pass "$test in $file"
+    }
+}
+
+proc assert-zero {result file test} {
+    if {$result == 0} {
+        pass "$test in $file"
+    } else {
+        fail "$test in $file"
+    }
+}
+
+proc collect-matching {file pattern} {
+    set fd [open "$file.bir"]
+    set output [read $fd]
+    close $fd
+    return [regexp -inline -all -- $pattern $output]
+}
+
+
+proc non-zero-matches {file pattern test} {
+    set got [collect-matching $file $pattern]
+    set matches [llength $got]
+    assert-non-zero $matches $file $test
+}
+
+proc zero-matches {file pattern test} {
+    set got [collect-matching $file $pattern]
+    set matches [llength $got]
+    assert-zero $matches $file $test
+}
+
+
 # `foreach-binary {file pattern} {expectations}` spawns bap with `-d`
 # option on each binary in the test suite that matches with the
 # `pattern`, and pass expectations to `expect`. The name passed as a
