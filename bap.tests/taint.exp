@@ -9,31 +9,41 @@ set base_opts {
     --primus-greedy-scheduler
     --primus-propagate-taint-from-attributes
     --primus-propagate-taint-to-attributes
+    --primus-lisp-channel-redirect=<stdout>:stdout
+}
+
+set systems {
+    bap:legacy-main
+    bap:reflective-taint-analyzer
 }
 
 foreach reg $regs {lappend base_opts "--taint-reg=$reg"}
 foreach attr $bir_attrs {lappend base_opts "--print-bir-attr=$attr"}
 
-foreach file [find "bin" "*"] {
-    set tainted_regs 0
-    set tainted_reg 0
-    set visited 0
-    set opts $base_opts
-    if { $file == "bin/powerpc32-linux-gnu-echo" } {
-        lappend opts "--api-path=api/powerpc"
-    }
+foreach system $systems {
+    foreach file [find "bin" "*"] {
+        set tainted_regs 0
+        set tainted_reg 0
+        set visited 0
+        set opts $base_opts
+        if { $file == "bin/powerpc32-linux-gnu-echo" } {
+            lappend opts "--api-path=api/powerpc"
+        }
 
-    lappend opts "--dump=bir:$file.bir\n"
-    set opts [join $opts " "]
-    send_log "bap $file $opts"
-    eval exec bap $file $opts
-    non-zero-matches $file {\.tainted-reg} "introduce"
-    non-zero-matches $file {\.tainted-regs} "propagate"
-    non-zero-matches $file {\.visited} "visited"
-    if { [regexp "mips|x86_64-w64-mingw" $file]} {
-        xfail "no-dead-code $file"
-    } else {
-        zero-matches $file {\.dead} "no-dead-code"
+        lappend opts "--dump=bir:$file.bir"
+        lappend opts "--run-system=$system"
+        set opts [join $opts " "]
+        send_log "bap $file $opts"
+        eval exec bap $file $opts
+        non-zero-matches $file {\.tainted-reg} "introduce in $system"
+        non-zero-matches $file {\.tainted-regs} "propagate in $system"
+        non-zero-matches $file {\.visited} "visited in $system"
+        if { [regexp "mips|x86_64-w64-mingw" $file]} {
+            xfail "no-dead-code $file"
+        } else {
+            zero-matches $file {\.dead} "no-dead-code"
+        }
+        exec rm -f "$file.bir"
+        exec rm -f stdout
     }
-    exec rm -f "$file.bir"
 }
