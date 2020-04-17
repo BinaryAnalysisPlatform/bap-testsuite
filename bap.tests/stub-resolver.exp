@@ -1,0 +1,18 @@
+set test "stub-resolver"
+
+set calls {
+    "call @foo with"
+    "call @bar@5b2 with"
+}
+
+set not_expected "call @bar with"
+
+foreach call $calls {
+    spawn bap "dyn/x86_64-elf_so" -d --read-symbols-from "data/x86_64-elf_so.symbols"
+
+    expect {
+        $not_expected {wait; fail "$test for $call: has $not_expected"}
+        $call {close; wait; pass "$test for $call"}
+        default {wait; fail "$test for $call"}
+    }
+}

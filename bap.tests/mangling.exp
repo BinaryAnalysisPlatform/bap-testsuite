@@ -1,8 +1,8 @@
 set test "mangling of duplicates subroutines"
 
 set subroutines {
-    "sub mycopy()"
-    "sub mycopy@5e0()"
+    "sub bar()"
+    "sub bar@5b2()"
 }
 
 foreach sub $subroutines {
