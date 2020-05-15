@@ -1,0 +1,35 @@
+set test "symexec"
+puts "running $test"
+
+set base_opts {
+    --run
+    --run-system=bap:symbolic-executor
+    --primus-lisp-load=symbolic-io,posix
+    --primus-symbolic-executor-cutoff=4096
+    --run-in-isolation
+}
+
+set timeout 60
+
+foreach bin [find "bin" "*-symexec-*"] {
+    set opts $base_opts
+    if [ string match "*powerpc*" $bin ] {
+        lappend opts "--api-path=api/powerpc"
+    }
+
+    if [string match "*mingw*" $bin ] {
+        xfail "mingw abi is not yet fully supported";
+        continue
+    }
+
+    if [string match "*mips*" $bin ] {
+        xfail "mips is missing symbols";
+        continue
+    }
+
+    eval spawn bap "$bin" [join $opts " "]
+    expect {
+        "access" {close; exec kill [exp_pid]; pass "$bin was hacked!" }
+        default {wait; fail "$bin withhold the attack."}
+    }
+}
