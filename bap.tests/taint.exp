@@ -21,7 +21,7 @@ foreach reg $regs {lappend base_opts "--taint-reg=$reg"}
 foreach attr $bir_attrs {lappend base_opts "--print-bir-attr=$attr"}
 
 foreach system $systems {
-    foreach file [find "bin" "*"] {
+    foreach file [find "bin" "*-echo"] {
         set tainted_regs 0
         set tainted_reg 0
         set visited 0
