@@ -9,11 +9,10 @@ int main(void) {
             return 0;
         }
         if (c <= 0) {
-            puts("good bye!");
             return 1;
         }
         if (c == '\n') {
-            puts("try again");
+            continue;
         }
     }
 }

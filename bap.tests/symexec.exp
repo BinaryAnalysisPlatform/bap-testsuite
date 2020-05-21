@@ -5,11 +5,9 @@ set base_opts {
     --run
     --run-system=bap:symbolic-executor
     --primus-lisp-load=symbolic-io,posix
-    --primus-symbolic-executor-cutoff=4096
+    --primus-symbolic-executor-cutoff=16
     --run-in-isolation
 }
-
-set timeout 60
 
 foreach bin [find "bin" "*-symexec-*"] {
     set opts $base_opts
@@ -17,19 +15,15 @@ foreach bin [find "bin" "*-symexec-*"] {
         lappend opts "--api-path=api/powerpc"
     }
 
-    if [string match "*mingw*" $bin ] {
-        xfail "mingw abi is not yet fully supported";
-        continue
-    }
-
-    if [string match "*mips*" $bin ] {
-        xfail "mips is missing symbols";
+    if {[string match "*mingw*" $bin ] || [string match "*mips*" $bin ]} {
         continue
     }
 
     eval spawn bap "$bin" [join $opts " "]
+    set timeout 120
     expect {
         "access" {close; exec kill [exp_pid]; pass "$bin was hacked!" }
-        default {wait; fail "$bin withhold the attack."}
+        timeout {close; exec kill [exp_pid]; fail "$bin run out of time."}
+        eof {wait; fail "$bin withhold the attack."}
     }
 }

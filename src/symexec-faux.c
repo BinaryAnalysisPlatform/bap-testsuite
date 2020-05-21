@@ -14,7 +14,6 @@ int accepted() {
 }
 
 int rejected() {
-    puts("Go away!");
     exit(1);
 }
 
@@ -54,10 +53,8 @@ int main(int argc, char **argv)
     char username[BUFSIZE];
     char password[BUFSIZE];
 
-    puts("Username: ");
     if (!fgets(username, sizeof(username), stdin))
         rejected();
-    puts("Password: ");
     if (!fgets(password, sizeof(password), stdin))
         rejected();
 

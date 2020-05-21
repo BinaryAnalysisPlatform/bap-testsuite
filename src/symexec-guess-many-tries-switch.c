@@ -10,7 +10,7 @@ int main(void) {
             puts("access granted");
             return 0;
         case '\n':
-            puts("try again");
+            continue;
         }
     }
 }
