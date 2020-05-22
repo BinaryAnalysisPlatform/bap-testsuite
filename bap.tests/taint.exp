@@ -38,8 +38,8 @@ foreach system $systems {
         non-zero-matches $file {\.tainted-reg} "introduce in $system"
         non-zero-matches $file {\.tainted-regs} "propagate in $system"
         non-zero-matches $file {\.visited} "visited in $system"
-        if { [regexp "mips|w64-mingw" $file]} {
-            xfail "no-dead-code $file"
+        if { [regexp "android|mips|w64-mingw" $file]} {
+            continue
         } else {
             zero-matches $file {\.dead} "no-dead-code"
         }
