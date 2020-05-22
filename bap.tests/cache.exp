@@ -18,7 +18,7 @@ proc init {} {
 
     exec bap cache --size=5 --overhead=50 --cache-dir=$dir --disable-gc
     for {set x 0} {$x < 10} {incr x} {
-        exec head -c [expr 1*1024*1024] /dev/random > $dir/.cache/bap/data/entry.$x
+        exec truncate -s 1M $dir/.cache/bap/data/entry.$x
     }
     return $dir
 }
@@ -29,10 +29,10 @@ set info [exec mktemp]
 # Check that parameters are set correctly
 exec bap cache --info --cache-dir=$cache_dir > $info
 
-check $info $test "Capacity:         5 MB" "set max_size"
-check $info $test "GC threshold:     7 MB" "set threshold"
-check $info $test "Overhead:        50 %"  "set overhead"
-check $info $test "GC enabled:   false"    "set no gc"
+check $info $test "Capacity: * 5 MB" "set max_size"
+check $info $test "GC threshold: * 7 MB" "set threshold"
+check $info $test "Overhead: * 50 %"  "set overhead"
+check $info $test "GC enabled: * false"    "set no gc"
 
 # Check GC: when disabled current size > threshold
 check $info $test "Current size:    10 MB" "gc disabled"
@@ -40,7 +40,7 @@ check $info $test "Current size:    10 MB" "gc disabled"
 # Check GC: when enabled  current size < threshold
 exec bap cache --cache-dir=$cache_dir --enable-gc
 exec bap cache --info --cache-dir=$cache_dir > $info
-check $info $test "Current size:     3 MB"  "gc enabled"
+check $info $test "Current size: * 3 MB"  "gc enabled"
 
 # Check that even gc is disabled it could be run via cmdline option,
 # restore initial cache state for that.
@@ -48,7 +48,7 @@ exec rm -rf $cache_dir
 set cache_dir [init]
 exec bap cache --run-gc --cache-dir=$cache_dir
 exec bap cache --info --cache-dir=$cache_dir > $info
-check $info $test "Current size:     3 MB" "run gc"
+check $info $test "Current size: * 3 MB" "run gc"
 
 # clean up
 exec rm $info
