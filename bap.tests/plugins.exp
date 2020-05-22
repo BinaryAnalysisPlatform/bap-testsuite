@@ -1,6 +1,6 @@
 set test "plugins"
 
-set plugins [exec bap "list" "plugins" | cut "-d " -f4]
+set plugins [exec bap "list" "plugins" | cut "-d " -f3]
 
 exec bap --version
 
