@@ -12,7 +12,7 @@ proc check {file test pattern descr} {
     }
 }
 
-# init cache and write exactly 10 Mb of random data
+# init cache and write exactly 10 Mb of data
 proc init {} {
     set dir [exec mktemp -d]
 
@@ -35,7 +35,7 @@ check $info $test "Overhead: * 50 %"  "set overhead"
 check $info $test "GC enabled: * false"    "set no gc"
 
 # Check GC: when disabled current size > threshold
-check $info $test "Current size:    10 MB" "gc disabled"
+check $info $test "Current size: * 10 MB" "gc disabled"
 
 # Check GC: when enabled  current size < threshold
 exec bap cache --cache-dir=$cache_dir --enable-gc
