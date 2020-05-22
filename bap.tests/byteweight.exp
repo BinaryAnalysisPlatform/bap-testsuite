@@ -1,6 +1,6 @@
 set test "byteweight"
 
-foreach-binary {file "*"} "bap dis -d" {
+foreach-binary {file "*-echo"} "bap dis -d" {
     "sub *print_strings" {close; wait; pass "$test $file"}
     default {
         wait;
