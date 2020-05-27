@@ -4,7 +4,7 @@ puts "running $test"
 set base_opts {
     --run
     --run-system=bap:symbolic-executor
-    --primus-lisp-load=symbolic-io,posix
+    --primus-lisp-load=symbolic-stdio,posix
     --primus-symbolic-executor-cutoff=16
     --run-in-isolation
 }
