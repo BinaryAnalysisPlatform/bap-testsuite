@@ -15,8 +15,8 @@ set testsuite {
     }
     "i686-w64-mingw32" {
         "sub main(main_argc, main_argv, main_result)"
-        "main_argc :: in u32 = mem?ESP + 4, el?:u32"
-        "main_argv :: in out u32 = mem?ESP + 8, el?:u32"
+        "main_argc :: in u32 = mem[ESP + 4, el]:u32"
+        "main_argv :: in out u32 = mem[ESP + 8, el]:u32"
         "main_result :: out u32 = EAX"
     }
     "x86_64-w64-mingw32" {
@@ -33,8 +33,8 @@ set testsuite {
     }
     "x86-linux-gnu" {
         "sub main(main_argc, main_argv, main_result)"
-        "main_argc :: in u32 = mem?ESP + 4, el?:u32"
-        "main_argv :: in out u32 = mem?ESP + 8, el?:u32"
+        "main_argc :: in u32 = mem[ESP + 4, el]:u32"
+        "main_argv :: in out u32 = mem[ESP + 8, el]:u32"
         "main_result :: out u32 = EAX"
     }
     "mips-linux-gnu" {
@@ -57,25 +57,19 @@ set testsuite {
     }
 }
 
+#escape all non-word characters
+#the & will be substituted by whatever was matched in the expression
+proc reEscape {str} {
+    regsub -all {\W} $str {\\&}
+}
 
 foreach {target lines} $testsuite {
     set file "$bindir/$target-echo"
+    eval exec bap $file "--dump=bir:$file.bir"
     foreach line $lines {
-        spawn bap "$file" -d
-        expect {
-            $line {
-                close; wait;
-                pass "$test <$line> in $target"
-            }
-            default {
-                if [file exists $file ] {
-                    wait;
-                    fail "$test <$line> $target"
-                } else {
-                    wait;
-                    untested "$test $target"
-                }
-            }
-        }
+        set escaped_line [reEscape $line]
+        non-zero-matches $file $escaped_line $line
     }
+   exec rm -f "$file.bir"
+
 }

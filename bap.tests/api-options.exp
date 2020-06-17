@@ -31,6 +31,7 @@ set cmds [subst {
     "add to next path"   add        $api_path ""                   0 c:$api_file   1
 }]
 
+
 foreach {name cmd path expected exp_status file chmod} $cmds {
     if {$path == ""} {
         set full_cmd "--api-$cmd $file"
@@ -42,20 +43,13 @@ foreach {name cmd path expected exp_status file chmod} $cmds {
         exec chmod u-x $data_dir
     }
 
-    uplevel 0 spawn bap $full_cmd
-    set res_status [lindex [wait] 3]
-    if {$exp_status == $res_status} {
-        expect {
-            $expected {pass "$test for $name"}
-            default {fail "no diagnostic/wrong messages in $test for $name"}
-        }
-    } else {fail "unexpected exit status in $test for $name: $res_status"}
+    with-exit-code $name $full_cmd $expected $exp_status
 
+    # exec rm -f output.bir
     if {$chmod == 1} {
-        exec chmod u+x $data_dir
+         exec chmod u+x $data_dir
     }
 }
-
 
 exec rm $api_file
 exec rm -r $api_path

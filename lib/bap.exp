@@ -58,6 +58,26 @@ proc zero-matches {file pattern test} {
     assert-zero $matches $file $test
 }
 
+proc with-exit-code {name opts expected expected_status} {
+    set status 0
+    if {[catch {uplevel 0 exec bap $opts >& output.bir} results options]} {
+        set details [dict get $options -errorcode]
+        if {[lindex $details 0] eq "CHILDSTATUS"} {
+            set status [lindex $details 2]
+        } else {
+            # Some other error; regenerate it to let caller handle
+            return -options $options -level 0 $results
+        }
+    }
+    if {$status == $expected_status} {
+        pass "got the expected exit status for the $name"
+    } else {
+        fail "got a wrong exit status for the $name"
+    }
+    non-zero-matches output "$expected.*" "got the right message for the $name"
+    exec rm -f output.bir
+}
+
 
 # `foreach-binary {file pattern} {expectations}` spawns bap with `-d`
 # option on each binary in the test suite that matches with the

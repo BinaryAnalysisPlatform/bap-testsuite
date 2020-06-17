@@ -16,13 +16,5 @@ set files {
 
 foreach {msg expected data} $files {
     set file [touch $data]
-    spawn bap $file -d
-    set status [lindex [wait] 3]
-    if {$status != 0} {
-        expect {
-            $expected {pass "$test for $msg"}
-            default {fail "no diagnostic/wrong messages in $test for $msg"}
-        }
-    } else {fail "unexpected zero exit status in $test for $msg"}
-    exec rm $file
+    with-exit-code $msg "$file -d" $expected 1
 }

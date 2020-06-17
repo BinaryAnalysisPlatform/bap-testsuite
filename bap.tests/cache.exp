@@ -18,7 +18,7 @@ proc init {} {
 
     exec bap cache --size=5 --overhead=50 --cache-dir=$dir --disable-gc
     for {set x 0} {$x < 10} {incr x} {
-        exec truncate -s 1M $dir/.cache/bap/data/entry.$x
+        exec head -c 1048576 /dev/zero > $dir/.cache/bap/data/entry.$x
     }
     return $dir
 }
