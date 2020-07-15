@@ -1,0 +1,10 @@
+set test "collators"
+
+set collator "callgraph"
+set base bin/arm-linux-gnueabi-echo
+
+eval exec bap compare $collator $base $base --callgraph-collator-output=result.bir
+non-zero-matches result "the same callgraph" "base is equal to base"
+eval exec bap compare $collator $base [glob bin/*-echo] --callgraph-collator-output=result.bir
+non-zero-matches result "is not different" "base is in the set"
+non-zero-matches result "Found 9 versions that are different" "all other are different"
