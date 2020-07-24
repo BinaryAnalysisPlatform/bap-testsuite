@@ -12,6 +12,6 @@ foreach {file expected} $cases {
     spawn bap $file --dump=ogre
     expect {
         $expected {close; wait; pass "$test for $file"}
-        default {wait; xfail "$test for $file"}
+        default {wait; fail "$test for $file"}
     }
 }
