@@ -1,11 +1,11 @@
 set test "macho loader"
 
-# Check that relocataions from dysymtab are read correctly
+# Check that relocations from dysymtab are read correctly
 # both for little and big endian files
 
 set cases {
-    "ko/powerpc-xnu-kext" "ref-external 45480 _abort"
-    "ko/x86_64-xnu-kext" "ref-external 18439 _memcmp"
+    "ko/powerpc-xnu-kext" "external-reference 45480 _abort"
+    "ko/x86_64-xnu-kext" "external-reference 18439 _memcmp"
 }
 
 foreach {file expected} $cases {
