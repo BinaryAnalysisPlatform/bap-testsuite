@@ -6,11 +6,10 @@ set syms [exec mktemp]
 exec printf "(entry 0 2)" > $syms
 exec printf "\\x83\\x3d\\xe9\\xb5\\x21\\x00\\x01\\xeb\\xf7" > $file
 
-spawn bap $file -dasm --loader=raw --raw-arch=x86
-
-expect {
-    "cmpl" {close; wait; pass "$test with raw code"}
-    default {wait; fail "$test with raw code"}
+match $file asm "--loader=raw --raw-arch=x86" {
+    "cmpl" {pass "$test"}
+    default {fail "$test"}
 }
+
 exec rm $file
 exec rm $syms

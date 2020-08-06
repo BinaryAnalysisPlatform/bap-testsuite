@@ -1,25 +1,26 @@
 # just to check that something works
 
 set suite {
-    x86-64   {\x48\x89\xc3\x00} {mov? %rax, %rbx}
-    x86      {\x89\xc3}         {mov? %eax, %ebx}
+    x86-64   {\x48\x89\xc3\x00} {mov. %rax, %rbx}
+    x86      {\x89\xc3}         {mov. %eax, %ebx}
     arm      {\x01\x00\xa0\xe1} {mov r0, r1}
     thumb    {\x08\x46}         {mov r0, r1}
-    mips     {\x00\x40\x08\x21} {move *$1, $2}
+    mips     {\x00\x40\x08\x21} {move *\$1, *\$2}
     systemz  {\x18\x12}         {lr %r1, %r2}
 }
 
+
 foreach {arch code asm} $suite {
     set test "$arch.mov"
-    spawn bap-mc --arch=$arch --show-insn=asm "$code"
-    expect {
-        "$asm" {close; wait; pass "$test"}
-        default {wait; fail "$test"}
+    match "$code" "--arch=$arch --show-insn=asm" {
+        "$asm" { pass "$test"}
+        default { fail "$test"}
     }
+
     set test "$arch.mov.trail"
-    spawn bap-mc --arch=$arch --show-insn=asm "$code\\x00"
-    expect {
-        "$asm"  {close; wait; pass $test}
-        default {wait; fail "$test"}
+    match "$code\\x00" "--arch=$arch --show-insn=asm" {
+        "$asm"  { pass $test}
+        default { fail "$test"}
     }
+
 }

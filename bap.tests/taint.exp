@@ -30,7 +30,7 @@ foreach system $systems {
             lappend opts "--api-path=api/powerpc"
         }
 
-        lappend opts "--dump=bir:$file.bir"
+        lappend opts "--dump=bir:$file.out"
         lappend opts "--run-system=$system"
         set opts [join $opts " "]
         send_log "bap $file $opts"
@@ -39,11 +39,12 @@ foreach system $systems {
         non-zero-matches $file {\.tainted-regs} "propagate in $system"
         non-zero-matches $file {\.visited} "visited in $system"
         if { [regexp "android|mips|w64-mingw" $file]} {
+            exec rm -f "$file.out"
             continue
         } else {
             zero-matches $file {\.dead} "no-dead-code"
         }
-        exec rm -f "$file.bir"
+        exec rm -f "$file.out"
         exec rm -f stdout
     }
 }

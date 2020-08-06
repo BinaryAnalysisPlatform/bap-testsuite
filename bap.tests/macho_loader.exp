@@ -9,9 +9,8 @@ set cases {
 }
 
 foreach {file expected} $cases {
-    spawn bap $file --dump=ogre
-    expect {
-        $expected {close; wait; pass "$test for $file"}
-        default {wait; fail "$test for $file"}
+    match $file ogre "--no-objdump --no-radare2" {
+        $expected {pass "$test for $file"}
+        default {fail "$test for $file"}
     }
 }

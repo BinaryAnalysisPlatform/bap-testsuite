@@ -57,19 +57,7 @@ set testsuite {
     }
 }
 
-#escape all non-word characters
-#the & will be substituted by whatever was matched in the expression
-proc reEscape {str} {
-    regsub -all {\W} $str {\\&}
-}
-
 foreach {target lines} $testsuite {
     set file "$bindir/$target-echo"
-    eval exec bap $file "--dump=bir:$file.bir"
-    foreach line $lines {
-        set escaped_line [reEscape $line]
-        non-zero-matches $file $escaped_line $line
-    }
-   exec rm -f "$file.bir"
-
+    find_all $file bir $lines $test
 }

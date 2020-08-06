@@ -1,2 +1,69 @@
 # A library of common utilities used across
 # different tool tests
+
+proc string-matched {str pattern} {
+    return [regexp -inline -all -- $pattern $str]
+}
+
+proc collect-matching {file pattern} {
+    set fd [open "$file.out"]
+    set output [read $fd]
+    set len [string length output]
+    close $fd
+    return [string-matched $output $pattern]
+}
+
+
+#escape all non-word characters
+#the & will be substituted by whatever was matched in the expression
+proc escape {str} {
+    regsub -all {\W} $str {\\&}
+}
+
+# `match_output cmd opts expectations level` matches the output
+# of the provided command (both stderr and stdout) called with the
+# options `opts`. The `expectations` is a list of patterns
+# and actions associated with these patterns. The action will be
+# called once the corresponding pattern is matched. Patterns and actions
+# are evaluated in the context of calling site. The call site
+# can be hinted with `level` parameter. The procedure works
+# until the first matching found. If no matches found,
+# the action associated with the `default` pattern is called.
+proc match_output { cmd opts expectations {provided_level ""} } {
+    if {$provided_level == ""} {
+        set callee_level [expr [info level] - 1 ]
+    } else {
+        set callee_level $provided_level
+    }
+    set level [expr [info level] - $callee_level]
+    set result "$cmd-result"
+    exec echo exec $cmd $result $opts >> $cmd.log
+    catch {eval exec $cmd $opts >& $result.out}
+    if { [file exists $result.out] == 1 } {
+        exec cat $result.out >> $cmd.log
+    }
+
+    set matched false
+    foreach {pat act} $expectations {
+        set pat [join [uplevel $level list $pat]]
+        if {$pat == "default"} {
+            continue
+        } else {
+            set got [collect-matching $result $pat]
+            set matches [llength $got]
+            if { $matches != 0} {
+                set matched true
+                uplevel $level $act
+                break
+            }
+        }
+    }
+    if {$matched == false} {
+        foreach {pat act} $expectations {
+            if {$pat == "default"} {
+                uplevel $level $act
+            }
+        }
+    }
+    exec rm -f "$result.out"
+}

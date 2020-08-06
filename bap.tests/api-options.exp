@@ -45,7 +45,6 @@ foreach {name cmd path expected exp_status file chmod} $cmds {
 
     with-exit-code $name $full_cmd $expected $exp_status
 
-    # exec rm -f output.bir
     if {$chmod == 1} {
          exec chmod u+x $data_dir
     }

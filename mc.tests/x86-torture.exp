@@ -1,18 +1,17 @@
 # throw garbage into x86 disassembler and get a nice output
 set suite {
-    {\x89\xc3\x00} {89 C3(00)}
-    {\x89\xc3\x00\x89\xc3} {89 C3(00 89)C3}
-    {\x00} {(00)}
-    {\xf3} {(F3)}
-    {\xf3\xf2} {(F3 F2)}
-    {\xf3\xf2\x00} {(F3 F2 00)}
+    {\x89\xc3\x00} {89 C3\(00\)}
+    {\x89\xc3\x00\x89\xc3} {89 C3\(00 89\)C3}
+    {\x00} {\(00\)}
+    {\xf3} {\(F3\)}
+    {\xf3\xf2} {\(F3 F2\)}
+    {\xf3\xf2\x00} {\(F3 F2 00\)}
 }
 
 foreach {input output} $suite {
     set test "x86-torture.$input"
-    spawn bap-mc --stop-on-error --arch=x86 "$input"
-    expect {
-        $output {close; wait; pass $test}
+    match "$input" "--stop-on-error --arch=x86" {
+        $output {pass $test}
         default {fail $test}
     }
 }

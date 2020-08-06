@@ -1,7 +1,7 @@
 set test "version"
-spawn bap-mc --version
-expect {
-    "1" {close; wait; pass $test}
-    "2" {close; wait; pass $test}
+
+match_output "bap-mc" "--version" {
+    "1" {pass $test}
+    "2" {pass $test}
     default {wait; fail $test}
 }

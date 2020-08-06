@@ -1,16 +1,14 @@
 
 set suite {
-    {\xf3\x89\xc3}             0x3 {mov? %eax, %ebx}
-    {\xf3\xf2\xf3\x89\xc3}     0x5 {mov? %eax, %ebx}
-    {\xf3\xf2\xf3\x48\x89\xc3} 0x6 {mov? %rax, %rbx}
+    {\xf3\x89\xc3}             0x3 {mov. %eax, %ebx}
+    {\xf3\xf2\xf3\x89\xc3}     0x5 {mov. %eax, %ebx}
+    {\xf3\xf2\xf3\x48\x89\xc3} 0x6 {mov. %rax, %rbx}
 }
 
 foreach {code size asm} $suite {
     set test "x86.prefix.$code"
-    spawn bap-mc --show-size --show-insn=asm "$code"
-    expect {
-        $size exp_continue
-        $asm {close; wait; pass $test}
-        default {wait; fail $test}
+    match "$code"  "--show-size --show-insn=asm" {
+        "$size.*$asm" { pass $test}
+        default { fail $test}
     }
 }

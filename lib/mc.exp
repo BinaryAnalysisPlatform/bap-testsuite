@@ -1,2 +1,8 @@
 # library for bap-mc test
 load_lib common.exp
+
+proc match { code opts expectations } {
+    set opts [concat $opts [escape $code] ]
+    set level [expr [info level] - 1]
+    match_output bap-mc $opts $expectations $level
+}
