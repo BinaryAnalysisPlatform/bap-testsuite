@@ -1,4 +1,6 @@
 set test "symbol"
+setup-logs $test
+
 set testsuite {
     "arm-linux-gnueabi" {
         main              8614

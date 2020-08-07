@@ -1,4 +1,5 @@
 set test "collators"
+setup-logs $test
 
 set collator "callgraph"
 set base bin/arm-linux-gnueabi-echo

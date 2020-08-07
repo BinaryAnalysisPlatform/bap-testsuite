@@ -1,4 +1,5 @@
 set test "improper_feed"
+setup-logs $test
 
 proc touch {data} {
     set file [exec mktemp]

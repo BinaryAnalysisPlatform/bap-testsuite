@@ -8,6 +8,8 @@
 
 
 set test "llvm-x86-64-sse"
+setup-logs $test
+
 set passes 0
 set expected_passes 7
 

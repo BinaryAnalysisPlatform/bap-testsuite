@@ -1,4 +1,5 @@
 set test "byteweight"
+setup-logs $test
 
 foreach-binary {file "*-echo"} "bap dis -d" {
     "sub *print_strings" {close; wait; pass "$test $file"}

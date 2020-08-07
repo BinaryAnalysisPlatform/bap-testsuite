@@ -1,4 +1,6 @@
 set test "symexec"
+setup-logs $test
+
 puts "running $test"
 
 set base_opts {

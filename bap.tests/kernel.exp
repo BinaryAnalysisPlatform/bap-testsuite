@@ -1,4 +1,5 @@
 set test "kernel-modules"
+setup-logs $test
 
 set file "ko/arm-can-bcm.ko"
 

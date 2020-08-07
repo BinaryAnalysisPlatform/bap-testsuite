@@ -1,4 +1,5 @@
 set test "api-options"
+setup-logs $test
 
 set data_dir [exec bap --api-list-paths]
 

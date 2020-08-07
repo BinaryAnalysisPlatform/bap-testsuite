@@ -1,4 +1,5 @@
 set test "mangling of duplicates subroutines"
+setup-logs $test
 
 set subroutines {
     "sub bar"

@@ -1,4 +1,6 @@
 # just to check that something works
+set test "mov"
+setup-logs $test
 
 set suite {
     x86-64   {\x48\x89\xc3\x00} {mov? %rax, %rbx}

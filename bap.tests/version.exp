@@ -1,4 +1,6 @@
-set test "version"
+set test "bap version"
+setup-logs $test
+
 spawn bap --version
 expect {
     "error" {close; wait; fail $test}

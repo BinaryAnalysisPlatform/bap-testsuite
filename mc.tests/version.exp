@@ -1,4 +1,6 @@
-set test "version"
+set test "mc version"
+setup-logs $test
+
 spawn bap-mc --version
 expect {
     "1" {close; wait; pass $test}

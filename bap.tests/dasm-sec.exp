@@ -1,4 +1,5 @@
 set test "disasm section"
+setup-logs $test
 
 set secs {
     .init

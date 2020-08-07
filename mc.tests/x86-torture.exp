@@ -1,4 +1,8 @@
 # throw garbage into x86 disassembler and get a nice output
+
+set test "x86-torture"
+setup-logs $test
+
 set suite {
     {\x89\xc3\x00} {89 C3(00)}
     {\x89\xc3\x00\x89\xc3} {89 C3(00 89)C3}

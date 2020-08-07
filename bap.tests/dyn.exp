@@ -1,4 +1,5 @@
 set test "dynamic-libraries"
+setup-logs $test
 
 set dyn_dir "dyn"
 

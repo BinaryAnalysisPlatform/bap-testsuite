@@ -1,4 +1,5 @@
 set test "echo.main"
+setup-logs $test
 
 foreach-binary {file "*-echo"} "bap dis -d" {
     "sub *main" {close; wait; pass "$test $file"}

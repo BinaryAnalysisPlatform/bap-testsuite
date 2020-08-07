@@ -1,4 +1,5 @@
 set test "cache"
+setup-logs $test
 
 proc check {file test pattern descr} {
     set fd [open "$file"]

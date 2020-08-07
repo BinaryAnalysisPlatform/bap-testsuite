@@ -1,4 +1,5 @@
 set test "config"
+setup-logs $test
 
 set file "$bindir/x86-linux-gnu-echo"
 

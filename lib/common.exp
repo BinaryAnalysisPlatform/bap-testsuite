@@ -1,2 +1,13 @@
 # A library of common utilities used across
 # different tool tests
+
+proc setup-logs {test {n ""} } {
+    global logfile
+    set test [regsub -all {\ } $test {-}]
+    if { $n != ""} {
+        set ::env(BAP_BACKLOG) $n
+    }
+    set logdir "logs/$test"
+    set ::env(BAP_LOG_DIR) $logdir
+    set logfile "$logdir/log"
+}
