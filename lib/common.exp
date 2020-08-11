@@ -91,9 +91,10 @@ proc sequential_match {cmd opts test patterns} {
     if { [file exists $result.out] == 1 } {
         exec cat $result.out >> $tool.log
     }
+
     set output [cat $result.out]
     set start 0
-    set counter 0
+
     foreach {pat} $patterns {
         set indexes [regexp -start $start -indices -inline -- $pat $output]
         set indexes [split [lindex $indexes 0]]
@@ -104,6 +105,9 @@ proc sequential_match {cmd opts test patterns} {
             pass "$test for $pat"
         }
         set start [lindex $indexes 0]
+        #increment start to make sure we don't match
+        #the same string again
+        set start [incr $start]
     }
     exec rm -f "$result.out"
 }

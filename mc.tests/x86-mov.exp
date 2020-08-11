@@ -124,22 +124,25 @@ set suite\(x86\) {
 }
 
 proc run {arch suite} {
-    foreach {code asm bil} $suite {
-        set test "$arch.mov.\[$asm\] -> $code"
-        set opts [subst {
-            "--arch=$arch"
-            "--show-insn=asm"
-            "--x86-lifter=modern"
-            "--show-bil=pretty"
-        }]
-        set opts [join $opts " "]
+    set opts [subst {
+        "--arch=$arch"
+        "--show-insn=asm"
+        "--x86-lifter=modern"
+        "--show-bil=pretty"
+    }]
+    set opts [join $opts " "]
 
-        match $code $opts {
-            "$asm.*$bil" {pass $test }
-            default { fail "$test" }
-        }
+    set regexps {}
+    set codes   {}
+    foreach {code asm bil} $suite {
+        lappend codes $code
+        lappend regexps "$asm.*$bil"
     }
+    set opts [concat $opts $codes]
+
+    sequential_match bap-mc $opts "$arch.mov" $regexps
 }
+
 
 foreach arch  [array names suite] {
     run $arch $suite($arch)
