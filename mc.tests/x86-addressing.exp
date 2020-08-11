@@ -1,7 +1,7 @@
 unset -nocomplain suite
 
 set test "x86-addressing"
-setup-logs $test 300
+setup-logs $test
 
 set suite(x86-64) {
     {0x48,0xa3,0x04,0x00,0x00,0x00,0x00,0x00,0x00,0x00} {movabsq %rax, 0x4} {.*\[4, el\].*}
@@ -290,20 +290,41 @@ set suite\(x86\) {
 }
 
 proc run {arch suite} {
+
+    set base_opts [subst {
+        "--arch=$arch"
+        "--show-insn=asm"
+        "--x86-lifter=modern"
+        "--show-bil=pretty"
+    }]
+    set base_opts [join $base_opts " "]
+
+    set regexps {}
+    set codes   {}
+    set rips    {}
     foreach {code asm bil} $suite {
+        if { [string first rip $asm] != -1} {
+            lappend rips $code $asm $bil
+        } else {
+            lappend codes $code
+            lappend regexps "$asm.$bil"
+        }
+    }
+
+    set codes [escape [join $codes ","]]
+    set opts [concat $base_opts $codes]
+
+    sequential_match bap-mc $opts "x86-addressing" $regexps
+
+    # runs tests with instruction pointer separately, since concatenation makes each
+    # instruction to have an address that is differ from 0 (except first one). It doesn't
+    # matter for other test cases, since their output doesn't depend on address.
+    foreach {code asm bil } $rips {
         set test "$arch.addressing.\[$asm\] -> $code"
-        set opts [subst {
-            "--arch=$arch"
-            "--show-insn=asm"
-            "--x86-lifter=modern"
-            "--show-bil=pretty"
-        }]
-        set opts [join $opts " "]
-        match $code $opts {
+        match $code $base_opts  {
             "$asm.$bil" {pass $test }
             default { fail "$test" }
         }
-
     }
 }
 

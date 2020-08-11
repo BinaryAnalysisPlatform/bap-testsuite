@@ -1,6 +1,8 @@
 set test "dynamic-libraries"
 setup-logs $test
 
+set dyn_dir "dyn"
+
 set cases {
     "x86-coff-libvlc_dll" "libvlc_printerr" "libvlc_add_intf"
     "x86_64-macho_dylib" "_printf" "_my_print"
@@ -19,5 +21,4 @@ foreach {file sym caller} $cases {
         "call @$sym" {pass "$test for call $sym"}
         default    {fail "$test for call $sym"}
     }
-
 }

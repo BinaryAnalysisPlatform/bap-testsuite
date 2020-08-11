@@ -1,18 +1,32 @@
 # A library of common utilities used across
 # different tool tests
 
+proc setup-logs {test {n ""} } {
+    global logfile
+    set test [regsub -all {\ } $test {-}]
+    if { $n != ""} {
+        set ::env(BAP_BACKLOG) $n
+    }
+    set logdir "logs/$test"
+    set ::env(BAP_LOG_DIR) $logdir
+    set logfile "$logdir/log"
+}
+
 proc string-matched {str pattern} {
     return [regexp -inline -all -- $pattern $str]
 }
 
-proc collect-matching {file pattern} {
-    set fd [open "$file.out"]
+proc cat {file} {
+    set fd [open "$file"]
     set output [read $fd]
-    set len [string length output]
     close $fd
-    return [string-matched $output $pattern]
+    return $output
 }
 
+proc collect-matching {file pattern} {
+    set output [cat $file.out]
+    return [string-matched $output $pattern]
+}
 
 #escape all non-word characters
 #the & will be substituted by whatever was matched in the expression
@@ -38,7 +52,7 @@ proc match_output { cmd opts expectations {provided_level ""} } {
     }
     set level [expr [info level] - $callee_level]
     set result "$cmd-result"
-    exec echo exec $cmd $result $opts >> $tool.log
+    exec echo exec $cmd $opts >> $tool.log
     catch {eval exec $cmd $opts >& $result.out}
     if { [file exists $result.out] == 1 } {
         exec cat $result.out >> $tool.log
@@ -69,13 +83,27 @@ proc match_output { cmd opts expectations {provided_level ""} } {
     exec rm -f "$result.out"
 }
 
-proc setup-logs {test {n ""} } {
-    global logfile
-    set test [regsub -all {\ } $test {-}]
-    if { $n != ""} {
-        set ::env(BAP_BACKLOG) $n
+proc sequential_match {cmd opts test patterns} {
+    global tool
+    exec echo exec $cmd $opts >> $tool.log
+    set result "$cmd-result"
+    catch {eval exec $cmd $opts >& $result.out}
+    if { [file exists $result.out] == 1 } {
+        exec cat $result.out >> $tool.log
     }
-    set logdir "logs/$test"
-    set ::env(BAP_LOG_DIR) $logdir
-    set logfile "$logdir/log"
+    set output [cat $result.out]
+    set start 0
+    set counter 0
+    foreach {pat} $patterns {
+        set indexes [regexp -start $start -indices -inline -- $pat $output]
+        set indexes [split [lindex $indexes 0]]
+        if {[llength $indexes] == 0} {
+            fail "$test for $pat"
+            break
+        } else {
+            pass "$test for $pat"
+        }
+        set start [lindex $indexes 0]
+    }
+    exec rm -f "$result.out"
 }
