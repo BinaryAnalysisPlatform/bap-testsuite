@@ -1,15 +1,8 @@
 set test "cache"
 
-proc check {file test pattern descr} {
-    set fd [open "$file"]
-    set output [read $fd]
-    close $fd
-    set result [regexp -all -- $pattern $output]
-    if {$result == 0} {
-        fail "$test $descr"
-    } else {
-        pass "$test $descr"
-    }
+proc check {patterns} {
+    upvar 1 cache_dir dir
+    match_all "" "" "cache --info --cache-dir=$dir" $patterns
 }
 
 # init cache and write exactly 10 Mb of data
@@ -27,29 +20,31 @@ set cache_dir [init]
 set info [exec mktemp]
 
 # Check that parameters are set correctly
-exec bap cache --info --cache-dir=$cache_dir > $info
-
-check $info $test "Capacity: * 5 MB" "set max_size"
-check $info $test "GC threshold: * 7 MB" "set threshold"
-check $info $test "Overhead: * 50 %"  "set overhead"
-check $info $test "GC enabled: * false"    "set no gc"
-
 # Check GC: when disabled current size > threshold
-check $info $test "Current size: * 10 MB" "gc disabled"
+exec bap cache --info --cache-dir=$cache_dir  > $info
+check {
+    "Capacity: * 5 MB"       "set max_size"
+    "GC threshold: * 7 MB"   "set threshold"
+    "Overhead: * 50 %"       "set overhead"
+    "GC enabled: * false"    "set no gc"
+    "Current size: * 10 MB" "gc disabled"
+}
 
 # Check GC: when enabled  current size < threshold
 exec bap cache --cache-dir=$cache_dir --enable-gc
-exec bap cache --info --cache-dir=$cache_dir > $info
-check $info $test "Current size: * 3 MB"  "gc enabled"
+check {
+    "Current size: * 3 MB"  "gc enabled"
+}
 
 # Check that even gc is disabled it could be run via cmdline option,
 # restore initial cache state for that.
 exec rm -rf $cache_dir
 set cache_dir [init]
 exec bap cache --run-gc --cache-dir=$cache_dir
-exec bap cache --info --cache-dir=$cache_dir > $info
-check $info $test "Current size: * 3 MB" "run gc"
+
+check {
+    "Current size: * 3 MB" "run gc"
+}
 
 # clean up
-exec rm $info
 exec rm -rf $cache_dir

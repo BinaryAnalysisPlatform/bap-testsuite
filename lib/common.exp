@@ -30,6 +30,7 @@ proc escape {str} {
 # until the first matching found. If no matches found,
 # the action associated with the `default` pattern is called.
 proc match_output { cmd opts expectations {provided_level ""} } {
+    global tool
     if {$provided_level == ""} {
         set callee_level [expr [info level] - 1 ]
     } else {
@@ -37,10 +38,10 @@ proc match_output { cmd opts expectations {provided_level ""} } {
     }
     set level [expr [info level] - $callee_level]
     set result "$cmd-result"
-    exec echo exec $cmd $result $opts >> $cmd.log
+    exec echo exec $cmd $result $opts >> $tool.log
     catch {eval exec $cmd $opts >& $result.out}
     if { [file exists $result.out] == 1 } {
-        exec cat $result.out >> $cmd.log
+        exec cat $result.out >> $tool.log
     }
 
     set matched false

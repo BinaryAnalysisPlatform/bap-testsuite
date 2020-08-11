@@ -98,33 +98,46 @@ proc match { file {format ""} extra_opts expectations } {
     match_output bap $opts $expectations $level
 }
 
-# `find_all file output strings name opts` ensures that all the
-#strings can be found in the result of  `bap file opts` command.
-# The `output` parameter defines what to match against the expectations,
-# e.g. bir, asm, symbols, ogre
-proc find_all {filename format strings test { extra_opts ""} } {
+proc match_all {filename format extra_opts patterns {escaped false} } {
+    global tool
     if { $format != "" } {
         lappend extra_opts "--dump=$format:$filename.out"
     }
     set opts [subst $extra_opts]
     set opts [join $opts " "]
-    exec echo exec bap $filename $opts >> bap.log
+    exec echo exec bap $filename $opts >> $tool.log
     catch {eval exec bap $filename $opts >& $filename.out}
     if { [file exists $filename.out] == 1 } {
-        exec cat $filename.out >> bap.log
+        exec cat $filename.out >> $tool.log
     }
 
     set passed {}
     set failed {}
-    foreach str $strings {
-        set got [collect-matching $filename [escape $str]]
+    foreach {pat test} $patterns {
+        if { $escaped == true } {
+            set pat [escape $pat]
+        }
+        set got [collect-matching $filename $pat]
         if { [llength $got] != 0} {
-            lappend passed $str
+            lappend passed $test
         } else {
-            lappend failed $str
+            lappend failed $test
         }
     }
-    foreach p $passed { pass "$test for $p" }
-    foreach p $failed { fail "$test for $p" }
+    foreach p $passed { pass "$p" }
+    foreach p $failed { fail "$p" }
     exec rm -f "$filename.out"
+}
+
+# `find_all file output strings name opts` ensures that all the
+#strings can be found in the result of  `bap file opts` command.
+# The `output` parameter defines what to match against the expectations,
+# e.g. bir, asm, symbols, ogre
+proc find_all {filename format strings test { extra_opts ""} } {
+    set strs {}
+    foreach str $strings {
+        lappend strs $str
+        lappend strs "$test for $str"
+    }
+    match_all $filename $format $extra_opts $strs true
 }

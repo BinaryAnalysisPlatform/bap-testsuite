@@ -1,14 +1,15 @@
 set test "byteweight"
 
-foreach-binary {file "*-echo"} "bap dis -d" {
-    "sub *print_strings" {close; wait; pass "$test $file"}
-    default {
-        wait;
-        if [string match "*-*-gnueabihf-*" $file] {
-            note "signatures do not handle gnueabihf mode"
-            xfail "$test in $file"
-        } else {
-            fail "$test in $file"
+foreach file [find "bin" "*-echo"] {
+    match $file bir "" {
+        "sub .*print_strings" { pass "$test $file"}
+        default {
+            if [string match "*-*-gnueabihf-*" $file] {
+                note "signatures do not handle gnueabihf mode"
+                xfail "$test in $file"
+            } else {
+                fail "$test in $file"
+            }
         }
     }
 }
