@@ -68,3 +68,14 @@ proc match_output { cmd opts expectations {provided_level ""} } {
     }
     exec rm -f "$result.out"
 }
+
+proc setup-logs {test {n ""} } {
+    global logfile
+    set test [regsub -all {\ } $test {-}]
+    if { $n != ""} {
+        set ::env(BAP_BACKLOG) $n
+    }
+    set logdir "logs/$test"
+    set ::env(BAP_LOG_DIR) $logdir
+    set logfile "$logdir/log"
+}

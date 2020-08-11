@@ -1,4 +1,5 @@
 set test "api-main"
+setup-logs $test
 
 set testsuite {
     "arm-linux-gnueabi" {

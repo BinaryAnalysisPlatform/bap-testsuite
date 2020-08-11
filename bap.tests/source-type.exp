@@ -1,4 +1,5 @@
 set test "source-type"
+setup-logs $test
 
 set file [exec mktemp]
 set syms [exec mktemp]

@@ -1,5 +1,8 @@
 unset -nocomplain suite
 
+set test "x86-mov"
+setup-logs $test
+
 set suite(x86-64) {
     {0x88,0xc3} {movb %al, %bl} {RBX := high:56\[RBX\].low:8\[RAX\]}
     {0x88,0xe7} {movb %ah, %bh} {RBX := high:48\[RBX\].extract:15:8\[RAX\].low:8\[RBX\]}

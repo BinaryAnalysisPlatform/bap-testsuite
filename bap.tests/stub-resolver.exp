@@ -1,4 +1,5 @@
 set test "stub-resolver"
+setup-logs $test
 
 set expected {
     "call @foo with"

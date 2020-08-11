@@ -1,4 +1,5 @@
 set test "llvm-base"
+setup-logs $test
 
 set testsuite {
     "arm-linux-gnueabi"     main 614

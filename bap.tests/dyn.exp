@@ -1,5 +1,5 @@
 set test "dynamic-libraries"
-set dyn_dir "dyn"
+setup-logs $test
 
 set cases {
     "x86-coff-libvlc_dll" "libvlc_printerr" "libvlc_add_intf"

@@ -1,4 +1,5 @@
 set test "veri-x86_64"
+setup-logs $test
 
 set tracesdir "veri/traces/x86-64"
 set traces [exec ls $tracesdir]

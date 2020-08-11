@@ -1,4 +1,5 @@
-set test "version"
+set test "mc version"
+setup-logs $test
 
 match_output "bap-mc" "--version" {
     "1" {pass $test}

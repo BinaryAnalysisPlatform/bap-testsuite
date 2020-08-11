@@ -1,4 +1,5 @@
 set test "run"
+setup-logs $test
 
 set expected {
 hello

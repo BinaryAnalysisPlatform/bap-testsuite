@@ -1,4 +1,5 @@
 set test "echo.main"
+setup-logs $test
 
 foreach file [find "bin" "*-echo"] {
     match $file bir "" {

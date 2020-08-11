@@ -1,5 +1,6 @@
+set test "bap version"
+setup-logs $test
 
-set test "version"
 match_output "bap" "--version" {
     "error" {fail $test}
     "1" {pass $test}
