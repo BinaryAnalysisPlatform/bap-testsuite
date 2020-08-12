@@ -39,7 +39,7 @@ proc escape {str} {
 # for the tested tool the command as it was invocated and the output.
 proc run_command {cmd opts} {
     set result "$cmd-result"
-    send_log "$cmd $opts"
+    send_log "$cmd $opts\n"
     catch {eval exec $cmd $opts >& $result}
     if { [file exists $result] == 1 } {
         set ret [cat $result]
