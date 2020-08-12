@@ -34,6 +34,24 @@ proc escape {str} {
     regsub -all {\W} $str {\\&}
 }
 
+# `run_command cmd opts` runs the command `cmd` with the options `opts`
+# and returns the output from stderr and stdout. Writes to log file
+# for the tested tool the command as it was invocated and the output.
+proc run_command {cmd opts} {
+    set result "$cmd-result"
+    send_log "$cmd $opts"
+    catch {eval exec $cmd $opts >& $result}
+    if { [file exists $result] == 1 } {
+        set ret [cat $result]
+        send_log $ret
+        exec rm -f $result
+        return $ret
+    } else {
+        send_log "No output for $cmd $opts"
+        return ""
+    }
+}
+
 # `match_output cmd opts expectations level` matches the output
 # of the provided command (both stderr and stdout) called with the
 # options `opts`. The `expectations` is a list of patterns
@@ -44,27 +62,20 @@ proc escape {str} {
 # until the first matching found. If no matches found,
 # the action associated with the `default` pattern is called.
 proc match_output { cmd opts expectations {provided_level ""} } {
-    global tool
+    set result  [run_command $cmd $opts]
     if {$provided_level == ""} {
         set callee_level [expr [info level] - 1 ]
     } else {
         set callee_level $provided_level
     }
     set level [expr [info level] - $callee_level]
-    set result "$cmd-result"
-    exec echo exec $cmd $opts >> $tool.log
-    catch {eval exec $cmd $opts >& $result.out}
-    if { [file exists $result.out] == 1 } {
-        exec cat $result.out >> $tool.log
-    }
-
     set matched false
     foreach {pat act} $expectations {
         set pat [join [uplevel $level list $pat]]
         if {$pat == "default"} {
             continue
         } else {
-            set got [collect-matching $result $pat]
+            set got [string-matched $result $pat]
             set matches [llength $got]
             if { $matches != 0} {
                 set matched true
@@ -80,23 +91,20 @@ proc match_output { cmd opts expectations {provided_level ""} } {
             }
         }
     }
-    exec rm -f "$result.out"
 }
 
-proc sequential_match {cmd opts test patterns} {
-    global tool
-    exec echo exec $cmd $opts >> $tool.log
-    set result "$cmd-result"
-    catch {eval exec $cmd $opts >& $result.out}
-    if { [file exists $result.out] == 1 } {
-        exec cat $result.out >> $tool.log
-    }
 
-    set output [cat $result.out]
+# `match_until cmd opts test patterns` subsequently applies each
+# pattern from the `patterns` list to the output of the command
+# `cmd` invocated with options `opts`. Stops on the first pattern
+# that doesn't match. Every next pattern starts from the next
+# character after the previos pattern match occured.
+proc match_until {cmd opts test patterns} {
+    set result [run_command $cmd $opts]
     set start 0
 
     foreach {pat} $patterns {
-        set indexes [regexp -start $start -indices -inline -- $pat $output]
+        set indexes [regexp -start $start -indices -inline -- $pat $result]
         set indexes [split [lindex $indexes 0]]
         if {[llength $indexes] == 0} {
             fail "$test for $pat"
@@ -106,8 +114,57 @@ proc sequential_match {cmd opts test patterns} {
         }
         set start [lindex $indexes 0]
         #increment start to make sure we don't match
-        #the same string again
+        #the same substring again
         set start [incr $start]
     }
-    exec rm -f "$result.out"
+}
+
+proc match_patterns {str patterns escaped} {
+    set matched {}
+    set not_matched {}
+    foreach {pat test} $patterns {
+        if { $escaped == true } {
+            set pat [escape $pat]
+        }
+        set got [string-matched $str $pat]
+        if { [llength $got] != 0} {
+            lappend matched $test
+        } else {
+            lappend not_matched $test
+        }
+    }
+    return [subst {{$matched} {$not_matched}}]
+}
+
+# `match_all cmd opts patterns bad_patterns escaped`
+# matches the output of the command `cmd` invocated with
+# the options `opts` with every pattern from `patterns`
+# and `bad_patterns` lists. The `patterns` list contains
+# patterns that must be matched. The `bad_patterns` list
+# contains patterns that must NOT be matched. Each pattern
+# in the `patterns` and `bad_patterns` lists must be followed
+# by the test name which will be used as an argument to the
+# `pass`/`fail` functions, i.e. for display purposes.
+proc match_all {cmd opts patterns {bad_patterns {} } {escaped false}} {
+    set result [run_command $cmd $opts]
+
+    set match_result [match_patterns $result $patterns $escaped]
+    foreach p [lindex $match_result 0] { pass "$p" }
+    foreach p [lindex $match_result 1] { fail "$p" }
+
+    set match_result [match_patterns $result $bad_patterns $escaped]
+    foreach p [lindex $match_result 0] { fail "$p" }
+    foreach p [lindex $match_result 1] { pass "$p" }
+}
+
+# `find_all cmd opts strings testname` ensures that all the strings
+# can be found in the result of the invocation `cmd` with the options
+# `opts`.
+proc find_all_strings {cmd opts strings test } {
+    set strs {}
+    foreach str $strings {
+        lappend strs $str
+        lappend strs "$test for $str"
+    }
+    match_all $cmd $opts $strs {} true
 }

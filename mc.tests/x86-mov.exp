@@ -140,7 +140,7 @@ proc run {arch suite} {
     }
     set opts [concat $opts $codes]
 
-    sequential_match bap-mc $opts "$arch.mov" $regexps
+    match_until bap-mc $opts "$arch.mov" $regexps
 }
 
 

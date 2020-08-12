@@ -14,6 +14,7 @@ set suite {
 
 foreach {arch code asm} $suite {
     set test "$arch.mov"
+
     match "$code" "--arch=$arch --show-insn=asm" {
         "$asm" { pass "$test"}
         default { fail "$test"}
@@ -22,7 +23,7 @@ foreach {arch code asm} $suite {
     set test "$arch.mov.trail"
     match "$code\\x00" "--arch=$arch --show-insn=asm" {
         "$asm"  { pass $test}
-        default { fail "$test"}
+        default { fail "$tesxt"}
     }
 
 }

@@ -25,29 +25,28 @@ foreach attr $bir_attrs {lappend base_opts "--print-bir-attr=$attr"}
 
 foreach system $systems {
     foreach file [find "bin" "*-echo"] {
-        set tainted_regs 0
-        set tainted_reg 0
-        set visited 0
         set opts $base_opts
         if { $file == "bin/powerpc32-linux-gnu-echo" } {
             lappend opts "--api-path=api/powerpc"
         }
 
-        lappend opts "--dump=bir:$file.out"
+        lappend opts "--dump=bir"
         lappend opts "--run-system=$system"
         set opts [join $opts " "]
-        send_log "bap $file $opts"
-        eval exec bap $file $opts
-        non-zero-matches $file {\.tainted-reg} "introduce in $system"
-        non-zero-matches $file {\.tainted-regs} "propagate in $system"
-        non-zero-matches $file {\.visited} "visited in $system"
+
+        set patterns [subst {
+            "\.tainted-reg" "introduce in $system"
+            "\.tainted-regs" "propagate in $system"
+            "\.visited" "visited in $system"
+        }]
+
         if { [regexp "android|mips|w64-mingw" $file]} {
-            exec rm -f "$file.out"
-            continue
+            set bad_patterns {}
         } else {
-            zero-matches $file {\.dead} "no-dead-code"
+            set bad_patterns {"\.dead" "no-dead-code"}
         }
-        exec rm -f "$file.out"
+        match_all bap "$file $opts" $patterns $bad_patterns
+
         exec rm -f stdout
     }
 }

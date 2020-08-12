@@ -3,7 +3,7 @@ setup-logs $test
 
 proc check {patterns} {
     upvar 1 cache_dir dir
-    match_all "" "" "cache --info --cache-dir=$dir" $patterns
+    match_all bap "cache --info --cache-dir=$dir" $patterns
 }
 
 # init cache and write exactly 10 Mb of data
