@@ -28,10 +28,10 @@ proc collect-matching {file pattern} {
     return [string-matched $output $pattern]
 }
 
-#escape all non-word characters
-#the & will be substituted by whatever was matched in the expression
+# escape all non-word characters
+# the & will be substituted by whatever was matched in the expression
 proc escape {str} {
-    regsub -all {\W} $str {\\&}
+    return [regsub -all {\W} $str {\\&}]
 }
 
 # `run_command cmd opts` runs the command `cmd` with the options `opts`
@@ -136,28 +136,33 @@ proc match_patterns {str patterns escaped} {
     return [subst {{$matched} {$not_matched}}]
 }
 
+proc display_result {passed failed} {
+    foreach p $passed { pass "$p" }
+    foreach p $failed { fail "$p" }
+}
+
 # `match_all cmd opts patterns bad_patterns escaped`
 # matches the output of the command `cmd` invocated with
 # the options `opts` with every pattern from `patterns`
-# and `bad_patterns` lists. The `patterns` list contains
-# patterns that must be matched. The `bad_patterns` list
-# contains patterns that must NOT be matched. Each pattern
+# and `bad_patterns` lists. Every match with a pattern
+# from `patterns` list is considered as a passed test and
+# every mismatch as a failed one. And vice versa for the
+# `bad_patterns` - every match is considered as a failed test
+# and every mismatch as a passed one. Each pattern
 # in the `patterns` and `bad_patterns` lists must be followed
 # by the test name which will be used as an argument to the
 # `pass`/`fail` functions, i.e. for display purposes.
-proc match_all {cmd opts patterns {bad_patterns {} } {escaped false}} {
+proc match_all {cmd opts patterns {bad_patterns {} } {escaped false}}  {
     set result [run_command $cmd $opts]
 
     set match_result [match_patterns $result $patterns $escaped]
-    foreach p [lindex $match_result 0] { pass "$p" }
-    foreach p [lindex $match_result 1] { fail "$p" }
+    display_result [lindex $match_result 0] [lindex $match_result 1]
 
     set match_result [match_patterns $result $bad_patterns $escaped]
-    foreach p [lindex $match_result 0] { fail "$p" }
-    foreach p [lindex $match_result 1] { pass "$p" }
+    display_result [lindex $match_result 1] [lindex $match_result 0]
 }
 
-# `find_all cmd opts strings testname` ensures that all the strings
+# `find_all_strings cmd opts strings testname` ensures that all the strings
 # can be found in the result of the invocation `cmd` with the options
 # `opts`.
 proc find_all_strings {cmd opts strings test } {

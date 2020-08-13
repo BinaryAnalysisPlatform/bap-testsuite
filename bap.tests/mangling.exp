@@ -8,4 +8,4 @@ set subroutines {
 
 set file "dyn/x86_64-elf_so"
 
-find_all $file bir $subroutines $test
+find_all $file bir $subroutines $test "--read-symbols-from data/x86_64-elf_so.symbols"
