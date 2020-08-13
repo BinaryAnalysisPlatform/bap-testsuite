@@ -11,8 +11,9 @@ set regexps {}
 set codes   {}
 foreach {code size asm} $suite {
     lappend codes $code
-    lappend regexps "$size.*$asm"
+    lappend regexps "($size.*$asm){1,}?"
 }
+set codes [join $codes ","]
 
 set opts "--show-size --show-insn=asm $codes"
 

@@ -136,8 +136,9 @@ proc run {arch suite} {
     set codes   {}
     foreach {code asm bil} $suite {
         lappend codes $code
-        lappend regexps "$asm.*$bil"
+        lappend regexps "($asm.*$bil){1,}?"
     }
+    set codes [join $codes ","]
     set opts [concat $opts $codes]
 
     match_until bap-mc $opts "$arch.mov" $regexps

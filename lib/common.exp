@@ -97,8 +97,9 @@ proc match_output { cmd opts expectations {provided_level ""} } {
 # `match_until cmd opts test patterns` subsequently applies each
 # pattern from the `patterns` list to the output of the command
 # `cmd` invocated with options `opts`. Stops on the first pattern
-# that doesn't match. Every next pattern starts from the next
-# character after the previos pattern match occured.
+# that doesn't match. Every next matching starts from the end of
+# the substring matched by the previos pattern, i.e. no intersections
+# is allowed.
 proc match_until {cmd opts test patterns} {
     set result [run_command $cmd $opts]
     set start 0
@@ -112,10 +113,9 @@ proc match_until {cmd opts test patterns} {
         } else {
             pass "$test for $pat"
         }
-        set start [lindex $indexes 0]
-        #increment start to make sure we don't match
-        #the same substring again
-        set start [incr $start]
+        # set start on the symbol after the previous
+        # match stopped
+        set start [expr [lindex $indexes 1] + 1]
     }
 }
 

@@ -306,7 +306,7 @@ proc run {arch suite} {
             lappend rips $code $asm $bil
         } else {
             lappend codes $code
-            lappend regexps "$asm.$bil"
+            lappend regexps "($asm.*$bil){1,}?"
         }
     }
 
@@ -322,7 +322,7 @@ proc run {arch suite} {
         }
     }
 
-    set codes [escape [join $codes ","]]
+    set codes [join $codes ","]
     set opts [concat $opts $codes]
 
     match_until bap-mc $opts "$arch.addressing" $regexps
