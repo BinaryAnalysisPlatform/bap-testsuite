@@ -51,7 +51,7 @@ foreach bin $bins {
         lappend opts "--api-path=api/powerpc"
     }
     foreach system $systems {
-        eval spawn bap "bin/$bin" --run-system=$system --read-symbols-from "data/$bin.symbols" [join $opts " "]
+        eval spawn bap "bin/$bin" --run-system=$system --no-radare --no-objdump [join $opts " "]
         expect {
             "ill-typed" {close; wait; fail "program is ill-typed" }
             "$output\r\n" {close; wait; pass "$test $system $bin outputs everything" }

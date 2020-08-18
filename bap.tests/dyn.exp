@@ -11,14 +11,14 @@ set cases {
 
 foreach {file sym caller} $cases {
     set file "$dyn_dir/$file"
-    spawn bap $file -d --print-symbol=$sym
+    spawn bap $file -d --print-matching=subroutine:$sym
     expect {
         "sub $sym" {close; wait; pass "$test test for sub $sym in $file"}
         default {wait; fail "$test test: no sub $sym in $file"}
     }
 
     if {[string length $caller] != 0} {
-        spawn bap $file -d --print-symbol=$caller
+        spawn bap $file -d --print-matching=subroutine:$caller
         expect {
             "call @$sym" {close; wait; pass "$test test for call @$sym in $file"}
             default {wait; fail "$test test: no call of @$sym in $file"}
