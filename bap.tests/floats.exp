@@ -14,7 +14,6 @@ set passes 0
 set expected_passes 7
 
 set opts {
-    --read-symbols-from=data/floats.symbols
     --bil-enable-intrinsic=:unknown
     --primus-lisp-load=posix,llvm-x86-64-floats
     --pass=run

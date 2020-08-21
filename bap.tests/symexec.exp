@@ -23,7 +23,7 @@ foreach bin [find "bin" "*-symexec-*"] {
 
     set symbols [file join data [file tail $bin]]
 
-    eval spawn bap "$bin" [join $opts " "] --read-symbols-from "$symbols.symbols"
+    eval spawn bap "$bin" [join $opts " "]
     set timeout 240
     expect {
         "access" {close; exec kill [exp_pid]; pass "$bin was hacked!" }

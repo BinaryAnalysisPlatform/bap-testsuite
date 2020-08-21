@@ -12,13 +12,12 @@ set cases {
 foreach {file sym caller} $cases {
     set file "$dyn_dir/$file"
 
-    match $file bir "--print-symbol=$sym" {
+    match $file bir "--print-matching=subroutine:$sym" {
         "sub $sym" {pass "$test for $sym"}
         default    {fail "$test for $sym"}
     }
 
-    match $file bir "--print-symbol=$caller" {
+    match $file bir "--print-matching=subroutine:$caller" {
         "call @$sym" {pass "$test for call $sym"}
         default    {fail "$test for call $sym"}
-    }
 }

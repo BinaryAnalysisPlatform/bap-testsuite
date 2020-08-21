@@ -22,6 +22,8 @@ set base_opts {
     --run-argv=hello,cruel,world
     --primus-lisp-type-check
     --run
+    --no-radare
+    --no-objdump
 }
 
 set systems {
@@ -53,7 +55,6 @@ foreach bin $bins {
     foreach system $systems {
         set full_opts $opts
         lappend full_opts "--run-system=$system"
-        lappend full_opts "--read-symbols-from data/$bin.symbols"
 
         match "bin/$bin" "" [join $full_opts " "] {
             "ill-typed" { fail "program is ill-typed" }
