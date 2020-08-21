@@ -20,4 +20,5 @@ foreach {file sym caller} $cases {
     match $file bir "--print-matching=subroutine:$caller" {
         "call @$sym" {pass "$test for call $sym"}
         default    {fail "$test for call $sym"}
+    }
 }
