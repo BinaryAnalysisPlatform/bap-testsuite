@@ -2,17 +2,9 @@ set test "disasm section"
 setup-logs $test
 
 set secs {
-    .init
-    .plt
-    .text
+    "Disassembly of section .init"
+    "Disassembly of section .plt"
+    "Disassembly of section .text"
 }
 
-set file x86_64-linux-gnu-echo
-
-foreach sec $secs {
-    spawn bap "$bindir/$file" -dasm
-    expect {
-        "Disassembly of section $sec" {close; wait; pass "$test $sec"}
-        default {wait; fail "$test failed at $sec"}
-    }
-}
+find_all "$bindir/x86_64-linux-gnu-echo" asm $secs $test

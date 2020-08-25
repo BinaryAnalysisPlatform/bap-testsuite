@@ -1,12 +1,11 @@
 set test "bap version"
 setup-logs $test
 
-spawn bap --version
-expect {
-    "error" {close; wait; fail $test}
-    "1" {close; wait; pass $test}
-    "2" {close; wait; pass $test}
-    eof {close; wait; fail $test}
+match_output "bap" "--version" {
+    "error" {fail $test}
+    "1" {pass $test}
+    "2" {pass $test}
+    eof {fail $test}
 }
 
 exec bap --version

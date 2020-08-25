@@ -22,11 +22,13 @@ set base_opts {
     --run-argv=hello,cruel,world
     --primus-lisp-type-check
     --run
+    --no-radare
+    --no-objdump
 }
 
 set systems {
-    bap:legacy-main
     bap:stubbed-executor
+    bap:legacy-main
 }
 
 
@@ -43,7 +45,7 @@ set bins [subst {
     "$powerpc"
 }]
 
-set output [join $expected "\r\n"]
+set output [join $expected ".*"]
 
 foreach bin $bins {
     set opts $base_opts
@@ -51,11 +53,14 @@ foreach bin $bins {
         lappend opts "--api-path=api/powerpc"
     }
     foreach system $systems {
-        eval spawn bap "bin/$bin" --run-system=$system --no-radare --no-objdump [join $opts " "]
-        expect {
-            "ill-typed" {close; wait; fail "program is ill-typed" }
-            "$output\r\n" {close; wait; pass "$test $system $bin outputs everything" }
-            default {wait; fail "got incomplete output from $bin with $system"}
+        set full_opts $opts
+        lappend full_opts "--run-system=$system"
+
+        match "bin/$bin" "" [join $full_opts " "] {
+            "ill-typed" { fail "program is ill-typed" }
+            "$output" { pass "$test $system $bin outputs everything" }
+            default { fail "got incomplete output from $bin with $system"}
         }
+
     }
 }

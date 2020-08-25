@@ -2,57 +2,30 @@ set test "llvm-base"
 setup-logs $test
 
 set testsuite {
-    "arm-linux-gnueabi" {
-        main               614
-        print_strings      5c4
-    }
-    "arm-linux-androideabi" {
-        main               668
-        print_strings      618
-    }
-    "i686-w64-mingw32" {
-        main               15c7
-        print_strings      159d
-    }
-    "x86_64-w64-mingw32" {
-        main               25a0
-        print_strings      153b
-    }
-    "x86_64-linux-gnu"  {
-        main               76b
-        print_strings      733
-
-    }
-    "x86-linux-gnu"  {
-        main               5a4
-        print_strings      57a
-    }
-
-    "x86_64-macho"  {
-        main              e50
-        print_strings     df0
-    }
+    "arm-linux-gnueabi"     main 614
+    "arm-linux-androideabi" main 668
+    "i686-w64-mingw32"      main 15c7
+    "x86_64-w64-mingw32"    main 25a0
+    "x86_64-linux-gnu"      main 76b
+    "x86-linux-gnu"         main 5a4
+    "x86_64-macho"          main e50
 }
 
 set print_opts {
-    --dump=symbols
     --print-symbol-format=name
     --print-symbol-format=addr
 }
 
-set bases { 0 42 }
+set new_base 42
 
-foreach {target symbols} $testsuite {
+foreach {target name addr0} $testsuite {
     set file "$bindir/$target-echo"
-    foreach {name addr0} $symbols {
-        foreach {base} $bases {
-            set msg "$test for base=$base in $file for $name"
-            set addr [format %x [expr "0x$addr0" + $base ]]
-            eval spawn bap --loader=llvm --llvm-base=$base "$file" [join $print_opts " "]
-            expect {
-                "$name $addr" {close; wait; pass $msg}
-                default {wait; fail $msg}
-            }
-        }
+    set msg "$test for base=$new_base in $file for $name"
+    set addr [format %x [expr "0x$addr0" + $new_base ]]
+    set opts [subst {--loader=llvm --llvm-base=$new_base}]
+    set opts [concat $opts [join $print_opts " "]]
+    match $file symbols $opts {
+        "$name $addr" {pass "$test for $name $addr"}
+        default {fail "$test for $name $addr"}
     }
 }

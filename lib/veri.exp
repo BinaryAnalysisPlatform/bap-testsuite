@@ -1,2 +1,9 @@
 # library for bap-veri test
 load_lib common.exp
+
+
+proc match { file opts expectations } {
+    set level [expr [info level] - 1]
+    set opts [concat "veri" $opts "$file"]
+    match_output "bap" $opts $expectations $level
+}

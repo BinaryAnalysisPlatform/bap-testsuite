@@ -1,0 +1,12 @@
+set test "internal-plt"
+setup-logs $test
+
+set expected {
+    "call @foo with"
+    "call @bar with"
+    "call @bar@5b2 with"
+}
+
+set file "dyn/x86_64-elf_so"
+
+find_all $file bir $expected $test "--read-symbols-from data/x86_64-elf_so.symbols"

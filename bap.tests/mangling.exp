@@ -6,10 +6,6 @@ set subroutines {
     "sub bar@5b2"
 }
 
-foreach sub $subroutines {
-    spawn bap "dyn/x86_64-elf_so" -d --read-symbols-from "data/x86_64-elf_so.symbols"
-    expect {
-        $sub {close; wait; pass "$test for $sub"}
-        default {wait; fail "$test for $sub"}
-    }
-}
+set file "dyn/x86_64-elf_so"
+
+find_all $file bir $subroutines $test "--read-symbols-from data/x86_64-elf_so.symbols"

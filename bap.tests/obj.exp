@@ -12,8 +12,8 @@ set subs {
 
 set prefixes {"sub " "call @" }
 
-foreach {file} [exec ls $obj_dir] {
-    set file "$obj_dir/$file"
+proc expected_of_file {file subs prefixes} {
+    set x {}
     foreach {sub} $subs {
         foreach {pref} $prefixes {
             if { [string match "*i686*" $file] || [string match "*mac*" $file] } {
@@ -21,13 +21,15 @@ foreach {file} [exec ls $obj_dir] {
             } else {
                 set suf ""
             }
-            set expected "$pref$suf$sub"
-            spawn bap $file -d
-
-            expect {
-                $expected {close; wait; pass "$test for $expected in $file"}
-                default {wait; fail "$test for $expected in $file"}
-            }
+            lappend x "$pref$suf$sub"
         }
     }
+    return $x
+}
+
+
+foreach {file} [exec ls $obj_dir] {
+    set file "$obj_dir/$file"
+    set expected [expected_of_file $file $subs $prefixes]
+    find_all $file bir $expected [concat $test $file]
 }

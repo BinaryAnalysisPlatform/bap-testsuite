@@ -27,20 +27,16 @@ print-symbol = print_strings # this is an example of parameter
 
 " > $conf_file
 
-spawn bap $file -d
-
-expect {
-    "sub main"   {close; wait; fail "$test: main is unexpected because not set in conf file"}
-    "sub print_strings" {close; wait; pass "$test for reading parameters from conf file"}
-    default {wait; fail "no output or wrong one is for $test"}
+match $file bir "" {
+    "sub main" {fail "$test: main is unexpected because not set in conf file"}
+    "sub print_strings" {pass "$test for reading parameters from conf file"}
+    default {fail "no output or wrong one is for $test"}
 }
 
-spawn bap $file -d --print-symbol=main
-
-expect {
-    "sub print_strings" {close; wait; fail "$test: print_strings is unexpected"}
-    "sub main"   {close; wait; pass "$test for overriding parameters in conf file"}
-    default {wait; fail "no output or wrong one is for $test"}
+match $file bir "--print-symbol=main" {
+    "sub print_strings" { fail "$test: print_strings is unexpected" }
+    "sub main"   { pass "$test for overriding parameters in conf file" }
+    default { fail "no output or wrong one is for $test" }
 }
 
 exec rm $conf_file

@@ -1,7 +1,9 @@
 set test "echo.main"
 setup-logs $test
 
-foreach-binary {file "*-echo"} "bap dis -d" {
-    "sub *main" {close; wait; pass "$test $file"}
-    default {wait; fail "$test in $file"}
+foreach file [find "bin" "*-echo"] {
+    match $file bir "" {
+        "sub .*main" {pass "$test $file"}
+        default {fail "$test $file"e}
+    }
 }
