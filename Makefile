@@ -10,6 +10,7 @@ runtest-exists:
 	else echo "Please, install runtest (dejagnu)"; exit 1; fi
 
 veri: runtest-exists
+	if [ -d .git ]; then git submodule init; git submodule update; 	fi
 	@export status=0;\
 	runtest --status --all --tool=veri || status=1; \
 	exit $$status
