@@ -4,6 +4,6 @@ setup-logs $test
 foreach file [find "bin" "*-echo"] {
     match $file bir "" {
         "sub .*main" {pass "$test $file"}
-        default {fail "$test $file"e}
+        default {fail "$test $file"}
     }
 }
