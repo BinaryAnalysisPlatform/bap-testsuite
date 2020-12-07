@@ -1,0 +1,38 @@
+# runs a simple floating-point arirthmetic test of the
+# x86 floating-point lifter. This file is so far a copy
+# of the floats.exp, which is testing floating-point intrinsics,
+# but with options that enable the x86-lifter.
+#
+# The test (source is in src/floats.c) performs only
+# three floating-point operations, addition, division,
+# and comparison (plus data movement ops, but they were
+# supported for a long time and covered by the mc tests)
+# The test program shall output PASS seven times
+# (see expected_passes)
+
+
+set test "llvm-x86-64-sse"
+setup-logs $test
+
+set passes 0
+set expected_passes 7
+
+set opts {
+    --bil-enable-fp-emulation
+    --x86-with-floating-points
+    --pass=run
+}
+
+eval spawn bap sse/floats [join $opts " "]
+
+expect {
+    "PASS" {incr passes; exp_continue}
+    default {
+        wait;
+        if { $passes == $expected_passes } {
+            pass "got $expected_passes passes"
+        } else {
+            fail "expected $expected_passes passes got $passes"
+        }
+    }
+}
