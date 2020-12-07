@@ -13,5 +13,5 @@ set echos [glob bin/*-echo]
 
 match_all bap "compare $collator $base $echos" {
     "is not different" "base is in the set"
-    "Found 9 versions that are different" "all other are different"
+    "Found 10 versions that are different" "all other are different"
 }

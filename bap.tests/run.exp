@@ -38,6 +38,7 @@ set powerpc "powerpc32-linux-gnu-echo"
 
 set bins [subst {
     "arm-linux-gnueabi-echo"
+    "armv5t-linux-gnueabi-echo"
     "x86-linux-gnu-echo"
     "x86_64-linux-gnu-echo"
     "$mips32"
