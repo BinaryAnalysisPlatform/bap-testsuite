@@ -40,6 +40,7 @@ set bins [subst {
     "arm-linux-gnueabi-echo"
     "x86-linux-gnu-echo"
     "x86_64-linux-gnu-echo"
+    "riscv64-linux-gnu-echo"
     "$mips32"
     "$mips64"
     "$powerpc"
@@ -52,6 +53,7 @@ foreach bin $bins {
     if { $bin == "$powerpc" } {
         lappend opts "--api-path=api/powerpc"
     }
+
     foreach system $systems {
         set full_opts $opts
         lappend full_opts "--run-system=$system"
