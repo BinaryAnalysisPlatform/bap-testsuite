@@ -17,6 +17,11 @@ foreach bin [find "bin" "*-symexec-*"] {
         lappend opts "--api-path=api/powerpc"
     }
 
+    if [ string match "*aarch64*" $bin ] {
+        lappend opts "--primus-lisp-load=aarch64-startup"
+        lappend opts "--primus-lisp-add=data"
+    }
+
     if {[string match "*mingw*" $bin ] || [string match "*mips*" $bin ]} {
         continue
     }
