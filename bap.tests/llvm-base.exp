@@ -16,7 +16,7 @@ set print_opts {
     --print-symbol-format=addr
 }
 
-set new_base 42
+set new_base 40
 
 foreach {target name addr0} $testsuite {
     set file "$bindir/$target-echo"
