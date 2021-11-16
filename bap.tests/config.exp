@@ -3,7 +3,7 @@ setup-logs $test
 
 set file "$bindir/x86-linux-gnu-echo"
 
-set etc [exec opam config var etc]
+set etc [exec opam var etc]
 set confdir "$etc/bap"
 set conf_file $confdir/config
 
