@@ -19,7 +19,7 @@ set expected_passes 7
 
 set opts {
     --bil-enable-fp-emulation
-    --x86-with-floating-points
+    --x86-with-legacy-floating-points
     --pass=run
 }
 

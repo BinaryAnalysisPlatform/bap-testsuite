@@ -13,13 +13,7 @@ setup-logs $test
 set passes 0
 set expected_passes 7
 
-set opts {
-    --bil-enable-intrinsic=:unknown
-    --primus-lisp-load=posix,llvm-x86-64-floats
-    --pass=run
-}
-
-eval spawn bap sse/floats [join $opts " "]
+eval spawn bap sse/floats --pass=run
 
 expect {
     "PASS" {incr passes; exp_continue}
