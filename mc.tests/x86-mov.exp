@@ -5,11 +5,11 @@ setup-logs $test
 
 set suite(x86-64) {
     {0x88,0xc3} {movb %al, %bl} {RBX := high:56\[RBX\].low:8\[RAX\]}
-    {0x88,0xe7} {movb %ah, %bh} {RBX := high:48\[RBX\].extract:15:8\[RAX\].low:8\[RBX\]}
+    {0x88,0xe7} {movb %ah, %bh} {RBX := high:48\[RBX\].(extract:)?15:8\[RAX\].low:8\[RBX\]}
     {0x88,0xc7} {movb %al, %bh} {RBX := high:48\[RBX\].low:8\[RAX\].low:8\[RBX\]}
-    {0x88,0xe3} {movb %ah, %bl} {RBX := high:56\[RBX\].extract:15:8\[RAX\]}
+    {0x88,0xe3} {movb %ah, %bl} {RBX := high:56\[RBX\].(extract:)?15:8\[RAX\]}
     {0x88,0x03} {movb %al, \(%rbx\)} {mem := mem with \[RBX\] <- low:8\[RAX\]}
-    {0x88,0x23} {movb %ah, \(%rbx\)} {mem := mem with \[RBX\] <- extract:15:8\[RAX\]}
+    {0x88,0x23} {movb %ah, \(%rbx\)} {mem := mem with \[RBX\] <- (extract:)?15:8\[RAX\]}
 
     {0x66,0x89,0xc3} {movw %ax, %bx} {RBX := high:48\[RBX\].low:16\[RAX\]}
     {0x66,0x89,0x03} {movw %ax, \(%rbx\)} {mem := mem with \[RBX, el\]:u16 <- low:16\[RAX\]}
@@ -19,9 +19,9 @@ set suite(x86-64) {
     {0x48,0x89,0x03} {movq %rax, \(%rbx\)} {mem := mem with \[RBX, el\]:u64 <- RAX}
 
     {0x8a,0xd8} {movb %al, %bl} {RBX := high:56\[RBX\].low:8\[RAX\]}
-    {0x8a,0xfc} {movb %ah, %bh} {RBX := high:48\[RBX\].extract:15:8\[RAX\].low:8\[RBX\]}
+    {0x8a,0xfc} {movb %ah, %bh} {RBX := high:48\[RBX\].(extract:)?15:8\[RAX\].low:8\[RBX\]}
     {0x8a,0xf8} {movb %al, %bh} {RBX := high:48\[RBX\].low:8\[RAX\].low:8\[RBX\]}
-    {0x8a,0xdc} {movb %ah, %bl} {RBX := high:56\[RBX\].extract:15:8\[RAX\]}
+    {0x8a,0xdc} {movb %ah, %bl} {RBX := high:56\[RBX\].(extract:)?15:8\[RAX\]}
     {0x8a,0x03} {movb \(%rbx\), %al} {RAX := high:56\[RAX\].mem\[RBX\]}
     {0x8a,0x23} {movb \(%rbx\), %ah} {RAX := high:48\[RAX\].mem\[RBX\].low:8\[RAX\]}
 
@@ -71,11 +71,11 @@ set suite(x86-64) {
 
 set suite\(x86\) {
     {0x88,0xc3} {movb %al, %bl} {EBX := high:24\[EBX\].low:8\[EAX\]}
-    {0x88,0xe7} {movb %ah, %bh} {EBX := high:16\[EBX\].extract:15:8\[EAX\].low:8\[EBX\]}
+    {0x88,0xe7} {movb %ah, %bh} {EBX := high:16\[EBX\].(extract:)?15:8\[EAX\].low:8\[EBX\]}
     {0x88,0xc7} {movb %al, %bh} {EBX := high:16\[EBX\].low:8\[EAX\].low:8\[EBX\]}
-    {0x88,0xe3} {movb %ah, %bl} {EBX := high:24\[EBX\].extract:15:8\[EAX\]}
+    {0x88,0xe3} {movb %ah, %bl} {EBX := high:24\[EBX\].(extract:)?15:8\[EAX\]}
     {0x88,0x03} {movb %al, \(%ebx\)} {mem := mem with \[EBX\] <- low:8\[EAX\]}
-    {0x88,0x23} {movb %ah, \(%ebx\)} {mem := mem with \[EBX\] <- extract:15:8\[EAX\]}
+    {0x88,0x23} {movb %ah, \(%ebx\)} {mem := mem with \[EBX\] <- (extract:)?15:8\[EAX\]}
 
     {0x66,0x89,0xc3} {movw %ax, %bx} {EBX := high:16\[EBX\].low:16\[EAX\]}
     {0x66,0x89,0x03} {movw %ax, \(%ebx\)} {mem := mem with \[EBX, el\]:u16 <- low:16\[EAX\]}
@@ -83,9 +83,9 @@ set suite\(x86\) {
     {0x89,0x03} {movl %eax, \(%ebx\)} {mem := mem with \[EBX, el\]:u32 <- EAX}
 
     {0x8a,0xd8} {movb %al, %bl} {EBX := high:24\[EBX\].low:8\[EAX\]}
-    {0x8a,0xfc} {movb %ah, %bh} {EBX := high:16\[EBX\].extract:15:8\[EAX\].low:8\[EBX\]}
+    {0x8a,0xfc} {movb %ah, %bh} {EBX := high:16\[EBX\].(extract:)?15:8\[EAX\].low:8\[EBX\]}
     {0x8a,0xf8} {movb %al, %bh} {EBX := high:16\[EBX\].low:8\[EAX\].low:8\[EBX\]}
-    {0x8a,0xdc} {movb %ah, %bl} {EBX := high:24\[EBX\].extract:15:8\[EAX\]}
+    {0x8a,0xdc} {movb %ah, %bl} {EBX := high:24\[EBX\].(extract:)?15:8\[EAX\]}
     {0x8a,0x03} {movb \(%ebx\), %al} {EAX := high:24\[EAX\].mem\[EBX\]}
     {0x8a,0x23} {movb \(%ebx\), %ah} {EAX := high:16\[EAX\].mem\[EBX\].low:8\[EAX\]}
 
