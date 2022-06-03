@@ -22,15 +22,15 @@ set testsuite {
     }
     "x86_64-w64-mingw32" {
         "sub main(main_argc, main_argv, main_result)"
-        "main_argc :: in u32 = RCX"
+        "main_argc :: in u32 = low:32[RCX]"
         "main_argv :: in out u64 = RDX"
-        "main_result :: out u32 = RAX"
+        "main_result :: out u32 = low:32[RAX]"
     }
     "x86_64-linux-gnu" {
         "sub main(main_argc, main_argv, main_result)"
-        "main_argc :: in u32 = RDI"
+        "main_argc :: in u32 = low:32[RDI]"
         "main_argv :: in out u64 = RSI"
-        "main_result :: out u32 = RAX"
+        "main_result :: out u32 = low:32[RAX]"
     }
     "x86-linux-gnu" {
         "sub main(main_argc, main_argv, main_result)"
