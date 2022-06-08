@@ -16,12 +16,7 @@ proc expected_of_file {file subs prefixes} {
     set x {}
     foreach {sub} $subs {
         foreach {pref} $prefixes {
-            if { [string match "*i686*" $file] || [string match "*mac*" $file] } {
-                set suf "_"
-            } else {
-                set suf ""
-            }
-            lappend x "$pref$suf$sub"
+            lappend x "$pref$sub"
         }
     }
     return $x
