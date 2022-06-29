@@ -40,15 +40,15 @@ set testsuite {
     }
     "mips-linux-gnu" {
         "sub main(main_argc, main_argv, main_result)"
-        "main_argc :: in u32 = A0"
-        "main_argv :: in out u32 = A1"
-        "main_result :: out u32 = V0"
+        "main_argc :: in u32 = R4"
+        "main_argv :: in out u32 = R5"
+        "main_result :: out u32 = R2"
     }
     "mips64-linux-gnueabi" {
         "sub main(main_argc, main_argv, main_result)"
-        "main_argc :: in u64 = A0"
-        "main_argv :: in out u64 = A1"
-        "main_result :: out u64 = V0"
+        "main_argc :: in u64 = R4"
+        "main_argv :: in out u64 = R5"
+        "main_result :: out u64 = R2"
     }
     "powerpc32-linux-gnu" {
         "sub main(main_argc, main_argv, main_result)"
