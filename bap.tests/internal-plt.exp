@@ -3,7 +3,7 @@ setup-logs $test
 
 set expected {
     "call @foo with"
-    "call @bar with"
+    "call @bar@5b2 with"
     "call @bar@5b2 with"
 }
 
