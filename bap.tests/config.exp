@@ -4,7 +4,7 @@ setup-logs $test
 set file "$bindir/x86-linux-gnu-echo"
 
 set etc [exec opam var etc]
-set confdir "$etc/bap"
+set confdir "$etc/bap-config"
 set conf_file $confdir/config
 
 set user_conf_exists false
