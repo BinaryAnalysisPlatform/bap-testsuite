@@ -1,7 +1,7 @@
 set test "api-options"
 setup-logs $test
 
-set data_dir [exec bap --api-list-paths]
+set data_dirs [split [exec bap --api-list-paths] "\n"]
 
 # mk tmp file and a link on it
 set api_file [exec mktemp]
@@ -21,7 +21,6 @@ set cmds [subst {
     "add api"            add        ""        ""                   0 c:$api_file   0
     "add duplicate"      add        ""        "Will not overwrite" 1 c:$api_file   0
     "add not existed"    add        ""        "can't find api"     1 c:some_file   0
-    "sanity check"       add        $api_path "Sanitization error" 1 c:$api_file   0
     "remove api"         rem        ""        ""                   0 c:$api_file   0
     "remove api at path" rem        $api_path ""                   0 c:$api_file   0
     "remove not existed" rem        ""        "Can't find api"     1 c:some_file   0
@@ -34,6 +33,7 @@ set cmds [subst {
 
 
 foreach {name cmd path expected exp_status file chmod} $cmds {
+
     if {$path == ""} {
         set full_cmd "--api-$cmd $file"
     } else {
@@ -41,13 +41,17 @@ foreach {name cmd path expected exp_status file chmod} $cmds {
     }
 
     if {$chmod == 1} {
-        exec chmod u-x $data_dir
+        foreach data_dir $data_dirs {
+            exec chmod u-x $data_dir
+        }
     }
 
     with-exit-code $name $full_cmd $expected $exp_status
 
     if {$chmod == 1} {
+        foreach data_dir $data_dirs {
          exec chmod u+x $data_dir
+        }
     }
 }
 
