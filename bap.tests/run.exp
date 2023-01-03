@@ -22,7 +22,6 @@ set base_opts {
     --run-argv=hello,cruel,world
     --primus-lisp-type-check
     --run
-    --no-radare
     --no-objdump
 }
 

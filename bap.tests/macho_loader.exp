@@ -10,7 +10,7 @@ set cases {
 }
 
 foreach {file expected} $cases {
-    match $file ogre "--no-objdump --no-radare2" {
+    match $file ogre "--no-objdump" {
         $expected {pass "$test for $file"}
         default {fail "$test for $file"}
     }
