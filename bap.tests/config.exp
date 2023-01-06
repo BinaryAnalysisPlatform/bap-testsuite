@@ -3,8 +3,7 @@ setup-logs $test
 
 set file "$bindir/x86-linux-gnu-echo"
 
-set etc [exec opam var etc]
-set confdir "$etc/bap-common"
+set confdir [exec bap config confdir]
 set conf_file $confdir/config
 
 set user_conf_exists false
